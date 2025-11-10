@@ -150,7 +150,15 @@ export const makefileSimple: StreamParser<{
         while (!stream.eol()) {
           const n = stream.next();
           if (n === '"') break;
-          if (n === '\\') stream.next();
+          if (n === '\\') {
+            // Check if this backslash is trailing (next char is EOL)
+            if (stream.eol()) {
+              // Don't consume it - let it be handled as trailing backslash
+              stream.backUp(1);
+              break;
+            }
+            stream.next();  // Consume escaped character
+          }
         }
         tokenType = 'property';
       } else if (ch === "'") {
@@ -158,7 +166,15 @@ export const makefileSimple: StreamParser<{
         while (!stream.eol()) {
           const n = stream.next();
           if (n === "'") break;
-          if (n === '\\') stream.next();
+          if (n === '\\') {
+            // Check if this backslash is trailing (next char is EOL)
+            if (stream.eol()) {
+              // Don't consume it - let it be handled as trailing backslash
+              stream.backUp(1);
+              break;
+            }
+            stream.next();  // Consume escaped character
+          }
         }
         tokenType = 'property';
       } else {
@@ -172,7 +188,15 @@ export const makefileSimple: StreamParser<{
       while (!stream.eol()) {
         const n = stream.next();
         if (n === '"') break;
-        if (n === '\\') stream.next();
+        if (n === '\\') {
+          // Check if this backslash is trailing (next char is EOL)
+          if (stream.eol()) {
+            // Don't consume it - let it be handled as trailing backslash
+            stream.backUp(1);
+            break;
+          }
+          stream.next();  // Consume escaped character
+        }
       }
       tokenType = 'string';
     }
@@ -182,9 +206,27 @@ export const makefileSimple: StreamParser<{
       while (!stream.eol()) {
         const n = stream.next();
         if (n === "'") break;
-        if (n === '\\') stream.next();
+        if (n === '\\') {
+          // Check if this backslash is trailing (next char is EOL)
+          if (stream.eol()) {
+            // Don't consume it - let it be handled as trailing backslash
+            stream.backUp(1);
+            break;
+          }
+          stream.next();  // Consume escaped character
+        }
       }
       tokenType = 'string';
+    }
+    // Trailing backslash line continuation (must be last character on line)
+    else if (ch === '\\') {
+      stream.next();
+      // Check if this is the last character (end of line)
+      if (stream.eol()) {
+        tokenType = 'builtin';
+      } else {
+        tokenType = null;
+      }
     }
     // Default - consume one character
     else {

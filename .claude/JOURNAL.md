@@ -49,6 +49,9 @@ This journal tracks substantive work on documents, diagrams, and documentation c
 15. **Task - Recipe Command @ Prefix Support**: Added syntax highlighting for silent recipe commands with @ prefix<br>
     **Result**: Implemented recognition of recipe commands starting with tab followed by `@` prefix (e.g., `	@echo`, `	@mkdir`). Both the `@` symbol and the command name are highlighted together as `builtin` token type, providing visual distinction for silent commands that don't echo during make execution. Commented out all debug console.log statements for production use. Version 1.0.66.
 
+16. **Task - Trailing Backslash Line Continuation Support**: Added syntax highlighting for trailing backslash line continuations in all contexts<br>
+    **Result**: Implemented recognition of trailing backslash (`\`) when it appears as the last character on a line, colored as `builtin` token type. Modified string parsing logic (both inside and outside `$(...)` constructs) to detect when a backslash is at end of line using `stream.backUp(1)` to leave it unconsumed by the string token. This allows the backslash to be tokenized separately as a line continuation marker. Applies to strings with double quotes, single quotes, and all other contexts. The backslash receives distinct highlighting regardless of whether it appears in recipe commands, variable assignments, target dependencies, or within quoted strings. Version 1.0.69.
+
 ---
 
 ## Release v1.0.66
