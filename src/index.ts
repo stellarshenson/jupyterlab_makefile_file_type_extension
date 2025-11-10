@@ -9,7 +9,7 @@ import { makefile } from './makefile-mode';
 
 // Import SVG icon as string - bold capital M like VS Code
 const makefileIconStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <text x="12" y="18" font-size="20" font-weight="900" text-anchor="middle" fill="#ef9a9a" font-family="Arial, sans-serif">M</text>
+  <text x="12" y="18" font-size="20" font-weight="900" text-anchor="middle" fill="#e57373" font-family="Arial, sans-serif">M</text>
 </svg>`;
 
 export const makefileIcon = new LabIcon({
