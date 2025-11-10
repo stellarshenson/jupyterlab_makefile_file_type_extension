@@ -18,12 +18,13 @@ export const makefile: StreamParser<{
   token: (stream, state) => {
     const ch = stream.peek();
 
-    // Line continuation backslash at end of line
+    // Line continuation backslash at end of line (must be last char)
     if (ch === '\\') {
       const pos = stream.pos;
       stream.next();
+      // Check if this is truly at end of line (no trailing whitespace)
       if (stream.eol()) {
-        return 'escape';
+        return 'keyword.control escape';
       }
       // Not at EOL, backtrack
       stream.pos = pos;
