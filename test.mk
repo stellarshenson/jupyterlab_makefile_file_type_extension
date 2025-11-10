@@ -22,3 +22,9 @@ TEST2 := 'simple single'
 TEST3 := "string with 'single' inside"
 TEST4 := 'string with "double" inside'
 
+
+## build packages
+build: clean increment_version check_dependencies
+	npm install
+	yarn install
+	python -m build

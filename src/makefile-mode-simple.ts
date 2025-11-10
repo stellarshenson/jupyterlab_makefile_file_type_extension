@@ -23,19 +23,6 @@ export const makefileSimple: StreamParser<{
     // Reset paren depth only when moving to NEW line
     const currentLineStart = (stream as any).lineStart || 0;
     if (currentLineStart !== state.lastLineStart) {
-      // Log the previous line's tokens
-      if (state.lineTokens.length > 0 && state.lastLineText) {
-        const tokenSummary = state.lineTokens.map(t =>
-          `[${t.start}-${t.end}] ${(t.type || 'null').padEnd(22)} ${t.text}`
-        ).join('\n  ');
-
-        console.log(`\n${'='.repeat(80)}`);
-        console.log(`LINE: ${state.lastLineText}`);
-        console.log(`${'='.repeat(80)}`);
-        console.log(`  ${tokenSummary}`);
-        console.log(`${'='.repeat(80)}\n`);
-      }
-
       state.parenDepth = 0;
       state.lastLineStart = currentLineStart;
       state.lastLineText = lineText;
@@ -49,54 +36,85 @@ export const makefileSimple: StreamParser<{
       stream.skipToEnd();
       tokenType = 'comment';
     }
+    // Variable assignments (e.g., TEST := ...)
+    else if (stream.sol() && stream.match(/^[A-Z_][A-Z0-9_]*/, false)) {
+      const varName = stream.match(/^[A-Z_][A-Z0-9_]*/);
+      if (varName && stream.match(/\s*[:?+]?=/, false)) {
+        stream.match(/\s*[:?+]?=/);
+        tokenType = 'variableName.definition strong';
+      } else {
+        tokenType = null;
+      }
+    }
+    // Operators
+    else if (stream.match(/[:?+]?=/)) {
+      tokenType = 'operator';
+    }
     // Handle $( - MUST come before string handling
     else if (ch === '$' && stream.match(/\$\(/, false)) {
       stream.next();
       stream.next();
       state.parenDepth++;
+      console.log(`  [DEPTH] pos=${startPos} $( -> depth=${state.parenDepth}`);
       tokenType = 'processingInstruction';
     }
     // Track nested ( inside $(...)
     else if (ch === '(' && state.parenDepth > 0) {
       state.parenDepth++;
       stream.next();
+      console.log(`  [DEPTH] pos=${startPos} ( inside $(...) -> depth=${state.parenDepth}`);
       tokenType = null;
     }
     // Track ) inside $(...)
     else if (ch === ')' && state.parenDepth > 0) {
       state.parenDepth--;
       stream.next();
+      console.log(`  [DEPTH] pos=${startPos} ) inside $(...) -> depth=${state.parenDepth}`);
       tokenType = state.parenDepth === 0 ? 'processingInstruction' : null;
     }
-    // Strings - double quote
-    else if (ch === '"') {
-      if (state.parenDepth === 0) {
+    // Inside $(...) - mark everything as processingInstruction
+    else if (state.parenDepth > 0) {
+      // Inside $(...)
+      if (ch === '"') {
         stream.next();
         while (!stream.eol()) {
           const n = stream.next();
           if (n === '"') break;
           if (n === '\\') stream.next();
         }
-        tokenType = 'string';
-      } else {
-        stream.next();
-        tokenType = 'atom';
-      }
-    }
-    // Strings - single quote
-    else if (ch === "'") {
-      if (state.parenDepth === 0) {
+        tokenType = 'processingInstruction';
+      } else if (ch === "'") {
         stream.next();
         while (!stream.eol()) {
           const n = stream.next();
           if (n === "'") break;
           if (n === '\\') stream.next();
         }
-        tokenType = 'string';
+        tokenType = 'processingInstruction';
       } else {
         stream.next();
-        tokenType = 'atom';
+        tokenType = 'processingInstruction';
       }
+    }
+    // Strings - double quote (outside $(...)
+    else if (ch === '"') {
+      stream.next();
+      while (!stream.eol()) {
+        const n = stream.next();
+        if (n === '"') break;
+        if (n === '\\') stream.next();
+      }
+      tokenType = 'string';
+    }
+    // Strings - single quote (outside $(...)
+    else if (ch === "'") {
+      stream.next();
+      while (!stream.eol()) {
+        const n = stream.next();
+        if (n === "'") break;
+        if (n === '\\') stream.next();
+      }
+      tokenType = 'string';
     }
     // Default - consume one character
     else {
@@ -115,14 +133,23 @@ export const makefileSimple: StreamParser<{
     };
     state.lineTokens.push(tokenInfo);
 
-    // Log token immediately
-    console.log(`[${tokenInfo.start}-${tokenInfo.end}] ${(tokenInfo.type || 'null').padEnd(22)} ${tokenInfo.text}`);
-
     // If we reached end of line, flush the summary
     if (stream.eol()) {
+      const tokenSummary = state.lineTokens
+        .filter(t => t.type !== null)
+        .map(t => `[${t.start}-${t.end}] ${(t.type as string).padEnd(22)} ${t.text}`)
+        .join('\n  ');
+
       console.log(`\n${'='.repeat(80)}`);
-      console.log(`COMPLETE LINE: ${lineText}`);
+      console.log(`LINE: ${lineText}`);
+      console.log(`${'='.repeat(80)}`);
+      if (tokenSummary) {
+        console.log(`  ${tokenSummary}`);
+      }
       console.log(`${'='.repeat(80)}\n`);
+
+      // Clear tokens after logging
+      state.lineTokens = [];
     }
 
     return tokenType;
