@@ -2,29 +2,30 @@ import { StreamParser } from '@codemirror/language';
 
 const variableRegex = /\$[\({][A-Za-z0-9_]+[\)}]/;
 const shellVariableRegex = /\$\{[A-Za-z0-9_]+\}/;
-const makeVariableRegex = /\$\([A-Za-z0-9_]+\)/;
 
 export const makefile: StreamParser<{
   inRecipe: boolean;
   inComment: boolean;
   parenDepth: number;
+  lastLineStart: number;
 }> = {
   name: 'makefile',
 
-  startState: () => {
-    return {
-      inRecipe: false,
-      inComment: false,
-      parenDepth: 0
-    };
-  },
+  startState: () => ({
+    inRecipe: false,
+    inComment: false,
+    parenDepth: 0,
+    lastLineStart: -1
+  }),
 
   token: (stream, state) => {
     const ch = stream.peek();
 
-    // Reset paren depth at start of line
-    if (stream.sol()) {
+    // Reset paren depth only when moving to NEW line
+    const currentLineStart = (stream as any).lineStart || 0;
+    if (currentLineStart !== state.lastLineStart) {
       state.parenDepth = 0;
+      state.lastLineStart = currentLineStart;
     }
 
     // Line continuation backslash at end of line (must be last char)
@@ -33,7 +34,7 @@ export const makefile: StreamParser<{
       stream.next();
       // Check if this is truly at end of line (no trailing whitespace)
       if (stream.eol()) {
-        return 'escape';
+        return 'keyword.control escape';
       }
       // Not at EOL, backtrack
       stream.pos = pos;
@@ -45,59 +46,69 @@ export const makefile: StreamParser<{
       return 'comment';
     }
 
-    // Handle $( constructs - check this BEFORE anything else
+    // Handle $( - MUST come before string handling
     if (ch === '$' && stream.match(/\$\(/, false)) {
-      stream.next(); // consume $
-      stream.next(); // consume (
+      stream.next();
+      stream.next();
       state.parenDepth++;
+
+      // Check for known Make functions
+      if (stream.match(/shell\b|wildcard\b|patsubst\b|filter\b|subst\b|foreach\b/, false)) {
+        stream.match(/\w+/);
+        return 'keyword';
+      }
+
       return 'processingInstruction';
     }
 
-    // Closing ) when inside $(...)
+    // Track nested ( inside $(...)
+    if (ch === '(' && state.parenDepth > 0) {
+      state.parenDepth++;
+      stream.next();
+      return null;
+    }
+
+    // Track ) inside $(...)
     if (ch === ')' && state.parenDepth > 0) {
       state.parenDepth--;
       stream.next();
-      return 'processingInstruction';
+      return state.parenDepth === 0 ? 'processingInstruction' : null;
     }
 
-    // Strings - only parse when NOT inside $(...) constructs
-    // When inside $(...), skip quotes without treating them as strings
+    // Strings - double quote
     if (ch === '"') {
+      const pos = stream.pos;
+      const line = (stream as any).string;
+      console.log(`[STRING] pos=${pos} depth=${state.parenDepth} char="${ch}" line="${line}"`);
       if (state.parenDepth === 0) {
-        stream.next(); // consume opening "
+        stream.next();
         while (!stream.eol()) {
-          const next = stream.next();
-          if (next === '"') {
-            break; // found matching closing "
-          }
-          if (next === '\\') {
-            stream.next(); // skip escaped character
-          }
+          const n = stream.next();
+          if (n === '"') break;
+          if (n === '\\') stream.next();
         }
+        console.log(`[STRING] Parsed as string, consumed to pos=${stream.pos}`);
         return 'string';
       } else {
-        // Inside $(...)  - just consume the quote as normal text
         stream.next();
-        return 'atom'; // Use atom color for quotes inside shell commands
+        console.log(`[STRING] Parsed as atom (inside $())`);
+        return 'atom';
       }
     }
+
+    // Strings - single quote
     if (ch === "'") {
       if (state.parenDepth === 0) {
-        stream.next(); // consume opening '
+        stream.next();
         while (!stream.eol()) {
-          const next = stream.next();
-          if (next === "'") {
-            break; // found matching closing '
-          }
-          if (next === '\\') {
-            stream.next(); // skip escaped character
-          }
+          const n = stream.next();
+          if (n === "'") break;
+          if (n === '\\') stream.next();
         }
         return 'string';
       } else {
-        // Inside $(...) - just consume the quote as normal text
         stream.next();
-        return 'atom'; // Use atom color for quotes inside shell commands
+        return 'atom';
       }
     }
 
@@ -150,33 +161,22 @@ export const makefile: StreamParser<{
     if (stream.sol() || (stream.match(/^\s*/) && stream.sol())) {
       const targetMatch = stream.match(/^[a-zA-Z0-9_-]+(?=\s*:)/);
       if (targetMatch) {
-        return 'keyword strong';
+        return 'keyword.control strong';
       }
     }
 
     // Special targets (.PHONY, .DEFAULT_GOAL, etc.)
     if (stream.match(/^\.[A-Z_]+/)) {
-      return 'keyword';
+      return 'keyword.control';
     }
 
-    // Variable references
-    if (ch === '$') {
-      // Make function calls like $(shell ...), $(wildcard ...)
-      if (stream.match(/\$\(shell\b/)) {
-        return 'keyword';
-      }
-      if (stream.match(/\$\(wildcard\b|\$\(patsubst\b|\$\(filter\b|\$\(subst\b|\$\(foreach\b/)) {
-        return 'keyword';
-      }
-      // Shell-style variables ${VAR} - use member color (like Python class members)
+    // Variable references - but ONLY if we're not starting a $(...)
+    if (ch === '$' && !stream.match(/\$\(/, false)) {
+      // Shell-style variables ${VAR}
       if (stream.match(shellVariableRegex)) {
-        return 'propertyName';
+        return 'variableName.special';
       }
-      // Make-style variables $(VAR) - use member color (like Python class members)
-      if (stream.match(makeVariableRegex)) {
-        return 'propertyName';
-      }
-      // Automatic variables $@, $<, etc. - use special color
+      // Automatic variables $@, $<, etc.
       if (stream.match(/\$[@<^+?*%|]/)) {
         return 'variableName.special';
       }

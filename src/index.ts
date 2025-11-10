@@ -5,7 +5,7 @@ import {
 import { IEditorLanguageRegistry } from '@jupyterlab/codemirror';
 import { LabIcon } from '@jupyterlab/ui-components';
 import { StreamLanguage, LanguageSupport } from '@codemirror/language';
-import { makefile } from './makefile-mode';
+import { makefileSimple as makefile } from './makefile-mode-simple';
 
 // Import SVG icon as string - bold capital M like VS Code
 const makefileIconStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -28,7 +28,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
   requires: [IEditorLanguageRegistry],
   activate: (app: JupyterFrontEnd, languages: IEditorLanguageRegistry) => {
     console.log(
-      '[jupyterlab_makefile_file_type_extension v1.0.25] Extension activated!'
+      '[jupyterlab_makefile_file_type_extension v1.0.31-debug] Extension activated!'
     );
 
     // Register Makefile language support
