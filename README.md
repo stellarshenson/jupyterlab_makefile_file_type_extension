@@ -1,6 +1,6 @@
 # JupyterLab Makefile Extension
 
-[![Github Actions Status](https://github.com/stellar-henson/jupyterlab_makefile_file_type_extension/workflows/Build/badge.svg)](https://github.com/stellar-henson/jupyterlab_makefile_file_type_extension/actions/workflows/build.yml)
+[![Github Actions Status](https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension/workflows/Build/badge.svg)](https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension/actions/workflows/build.yml)
 [![PyPI version](https://badge.fury.io/py/jupyterlab-makefile-file-type-extension.svg)](https://badge.fury.io/py/jupyterlab-makefile-file-type-extension)
 [![npm version](https://badge.fury.io/js/jupyterlab_makefile_file_type_extension.svg)](https://badge.fury.io/js/jupyterlab_makefile_file_type_extension)
 
