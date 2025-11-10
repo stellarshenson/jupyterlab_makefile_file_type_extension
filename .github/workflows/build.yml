@@ -29,10 +29,10 @@ jobs:
         set -eux
         python -m pip install .[test]
 
-        # pytest -vv -r ap --cov jupyterlab_close_all_tabs_extension
+        # pytest -vv -r ap --cov jupyterlab_makefile_file_type_extension
 
         jupyter labextension list
-        jupyter labextension list 2>&1 | grep -ie "jupyterlab_close_all_tabs_extension.*OK"
+        jupyter labextension list 2>&1 | grep -ie "jupyterlab_makefile_file_type_extension.*OK"
         python -m jupyterlab.browser_check
 
     - name: Package the extension
@@ -41,13 +41,13 @@ jobs:
 
         pip install build
         python -m build
-        pip uninstall -y "jupyterlab_close_all_tabs_extension" jupyterlab
+        pip uninstall -y "jupyterlab_makefile_file_type_extension" jupyterlab
 
     - name: Upload extension packages
       uses: actions/upload-artifact@v4
       with:
         name: extension-artifacts
-        path: dist/jupyterlab_close_all_tabs_extension*
+        path: dist/jupyterlab_makefile_file_type_extension*
         if-no-files-found: error
 
   test_isolated:
@@ -70,8 +70,8 @@ jobs:
         sudo rm -rf $(which node)
         sudo rm -rf $(which node)
 
-        pip install "jupyterlab>=4.0.0,<5" jupyterlab_close_all_tabs_extension*.whl
+        pip install "jupyterlab>=4.0.0,<5" jupyterlab_makefile_file_type_extension*.whl
 
         jupyter labextension list
-        jupyter labextension list 2>&1 | grep -ie "jupyterlab_close_all_tabs_extension.*OK"
+        jupyter labextension list 2>&1 | grep -ie "jupyterlab_makefile_file_type_extension.*OK"
         python -m jupyterlab.browser_check --no-browser-test
