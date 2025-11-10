@@ -48,3 +48,28 @@ This journal tracks substantive work on documents, diagrams, and documentation c
 
 15. **Task - Recipe Command @ Prefix Support**: Added syntax highlighting for silent recipe commands with @ prefix<br>
     **Result**: Implemented recognition of recipe commands starting with tab followed by `@` prefix (e.g., `	@echo`, `	@mkdir`). Both the `@` symbol and the command name are highlighted together as `builtin` token type, providing visual distinction for silent commands that don't echo during make execution. Commented out all debug console.log statements for production use. Version 1.0.66.
+
+---
+
+## Release v1.0.66
+
+**Release Date**: 2025-11-10
+
+**Summary**: Production-ready JupyterLab extension for comprehensive Makefile syntax highlighting with support for targets, variables, shell constructs, and Make-specific syntax.
+
+**Features**:
+- Target recognition with distinct highlighting for build targets and `.PHONY` declarations
+- Complete support for Make variable syntax: `$(...)`, `$$VARIABLE`, `$$(...)`, `$$((...))`
+- String parsing with proper quote matching both inside and outside shell constructs
+- Target dependency highlighting
+- Silent command (`@`) prefix support for recipe commands
+- Comprehensive file extension support: `.mk`, `.mak`, `.make`, `.makefile`, plus standard `Makefile` names
+- Custom bold "M" icon in pale red color matching VS Code style
+
+**Technical Details**:
+- Implements CodeMirror 6 StreamParser with stateful depth tracking
+- Proper parenthesis depth management for nested constructs
+- Escape sequence handling in strings
+- Production build with debug logging disabled
+
+**Tagged as**: RELEASE_v1.0.66
