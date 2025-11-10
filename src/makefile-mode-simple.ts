@@ -36,7 +36,7 @@ export const makefileSimple: StreamParser<{
       stream.skipToEnd();
       tokenType = 'comment';
     }
-    // Variable assignments (e.g., TEST := ...)
+    // Variable assignments (e.g., TEST := ...) - MUST check before targets
     else if (stream.sol() && stream.match(/^[A-Z_][A-Z0-9_]*/, false)) {
       const varName = stream.match(/^[A-Z_][A-Z0-9_]*/);
       if (varName && stream.match(/\s*[:?+]?=/, false)) {
@@ -46,8 +46,22 @@ export const makefileSimple: StreamParser<{
         tokenType = null;
       }
     }
+    // Target definitions (e.g., build: dependencies)
+    else if (stream.sol() && stream.match(/^[a-zA-Z0-9_\-\.]+:/, false)) {
+      // Match target name only
+      const targetMatch = stream.match(/^[a-zA-Z0-9_\-\.]+/);
+      if (targetMatch) {
+        tokenType = 'keyword.control strong';
+      } else {
+        tokenType = null;
+      }
+    }
     // Operators
     else if (stream.match(/[:?+]?=/)) {
+      tokenType = 'operator';
+    }
+    // Colon (for targets)
+    else if (stream.match(/:/)) {
       tokenType = 'operator';
     }
     // Handle $( - MUST come before string handling
