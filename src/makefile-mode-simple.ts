@@ -36,6 +36,13 @@ export const makefileSimple: StreamParser<{
       stream.skipToEnd();
       tokenType = 'comment';
     }
+    // Recipe commands with @ prefix (e.g., @echo, @mkdir)
+    else if (stream.sol() && stream.match(/^\t@[a-zA-Z_][a-zA-Z0-9_-]*/, false)) {
+      stream.match(/^\t/);  // Consume tab
+      stream.match(/^@/);   // Consume @
+      stream.match(/^[a-zA-Z_][a-zA-Z0-9_-]*/);  // Consume command
+      tokenType = 'builtin';
+    }
     // Special targets (.PHONY, .DEFAULT_GOAL, etc.) - MUST check before regular targets
     else if (stream.sol() && stream.match(/^\.[A-Z_]+/, false)) {
       stream.match(/^\.[A-Z_]+/);
@@ -94,7 +101,7 @@ export const makefileSimple: StreamParser<{
       stream.next();
       stream.next();
       state.parenDepth += 2;
-      console.log(`  [DEPTH] pos=${startPos} $$(( -> depth=${state.parenDepth}`);
+      // console.log(`  [DEPTH] pos=${startPos} $$(( -> depth=${state.parenDepth}`);
       tokenType = 'property';
     }
     // Handle $$( - shell command substitution (must check before $()
@@ -103,7 +110,7 @@ export const makefileSimple: StreamParser<{
       stream.next();
       stream.next();
       state.parenDepth++;
-      console.log(`  [DEPTH] pos=${startPos} $$( -> depth=${state.parenDepth}`);
+      // console.log(`  [DEPTH] pos=${startPos} $$( -> depth=${state.parenDepth}`);
       tokenType = 'property';
     }
     // Handle $( - MUST come before string handling
@@ -111,7 +118,7 @@ export const makefileSimple: StreamParser<{
       stream.next();
       stream.next();
       state.parenDepth++;
-      console.log(`  [DEPTH] pos=${startPos} $( -> depth=${state.parenDepth}`);
+      // console.log(`  [DEPTH] pos=${startPos} $( -> depth=${state.parenDepth}`);
       tokenType = 'property';
     }
     // Handle $$ variables (e.g., $$HOME, $$PATH, $$cols)
@@ -123,7 +130,7 @@ export const makefileSimple: StreamParser<{
     else if (ch === '(' && state.parenDepth > 0) {
       state.parenDepth++;
       stream.next();
-      console.log(`  [DEPTH] pos=${startPos} ( inside $(...) -> depth=${state.parenDepth}`);
+      // console.log(`  [DEPTH] pos=${startPos} ( inside $(...) -> depth=${state.parenDepth}`);
       tokenType = null;
     }
     // Track ) inside $(...)
@@ -131,7 +138,7 @@ export const makefileSimple: StreamParser<{
       const nextCh = stream.peek();
       state.parenDepth--;
       stream.next();
-      console.log(`  [DEPTH] pos=${startPos} ) inside $(...) -> depth=${state.parenDepth}`);
+      // console.log(`  [DEPTH] pos=${startPos} ) inside $(...) -> depth=${state.parenDepth}`);
       // Color closing ) as property if: depth reaches 0, OR if next char is also ) and depth is 1
       tokenType = (state.parenDepth === 0 || (state.parenDepth === 1 && nextCh === ')')) ? 'property' : null;
     }
@@ -198,18 +205,18 @@ export const makefileSimple: StreamParser<{
 
     // If we reached end of line, flush the summary
     if (stream.eol()) {
-      const tokenSummary = state.lineTokens
-        .filter(t => t.type !== null)
-        .map(t => `[${t.start}-${t.end}] ${(t.type as string).padEnd(22)} ${t.text}`)
-        .join('\n  ');
+      // const tokenSummary = state.lineTokens
+      //   .filter(t => t.type !== null)
+      //   .map(t => `[${t.start}-${t.end}] ${(t.type as string).padEnd(22)} ${t.text}`)
+      //   .join('\n  ');
 
-      console.log(`\n${'='.repeat(80)}`);
-      console.log(`LINE: ${lineText}`);
-      console.log(`${'='.repeat(80)}`);
-      if (tokenSummary) {
-        console.log(`  ${tokenSummary}`);
-      }
-      console.log(`${'='.repeat(80)}\n`);
+      // console.log(`\n${'='.repeat(80)}`);
+      // console.log(`LINE: ${lineText}`);
+      // console.log(`${'='.repeat(80)}`);
+      // if (tokenSummary) {
+      //   console.log(`  ${tokenSummary}`);
+      // }
+      // console.log(`${'='.repeat(80)}\n`);
 
       // Clear tokens after logging
       state.lineTokens = [];
