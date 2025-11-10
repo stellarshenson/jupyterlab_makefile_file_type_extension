@@ -1,8 +1,27 @@
-# jupyterlab_makefile_file_type_extension
+# JupyterLab Makefile Extension
 
-[![Github Actions Status](/workflows/Build/badge.svg)](/actions/workflows/build.yml)
+[![Github Actions Status](https://github.com/stellar-henson/jupyterlab_makefile_file_type_extension/workflows/Build/badge.svg)](https://github.com/stellar-henson/jupyterlab_makefile_file_type_extension/actions/workflows/build.yml)
+[![PyPI version](https://badge.fury.io/py/jupyterlab-makefile-file-type-extension.svg)](https://badge.fury.io/py/jupyterlab-makefile-file-type-extension)
+[![npm version](https://badge.fury.io/js/jupyterlab_makefile_file_type_extension.svg)](https://badge.fury.io/js/jupyterlab_makefile_file_type_extension)
 
-Jupyterlab extension to add handling of Makefiles and syntax colouring support
+A JupyterLab extension providing comprehensive Makefile support with syntax highlighting and custom file type recognition.
+
+![Makefile Extension Screenshot](.resources/screenshot.png)
+
+## Features
+
+This extension enhances the Makefile editing experience in JupyterLab with intelligent syntax highlighting and visual aids:
+
+- **Custom syntax highlighter** - Purpose-built CodeMirror language mode for accurate Makefile token recognition
+- **Target highlighting** - Build targets (`build:`, `install:`, etc.) displayed in bold with distinct keyword styling
+- **Variable recognition** - Make-style `$(VAR)` and shell-style `${VAR}` variables colored differently for clarity
+- **Automatic variables** - Special variables like `$@`, `$<`, `$^` highlighted distinctly
+- **Function support** - Make functions (`$(shell ...)`, `$(wildcard ...)`, etc.) recognized as keywords
+- **Line continuations** - Backslash line breaks (`\`) at end of lines highlighted prominently
+- **String parsing** - Quoted strings in single and double quotes properly recognized throughout
+- **Recipe detection** - Tab-indented command lines distinguished from regular Makefile content
+- **Custom icon** - VS Code-style bold red "M" icon for easy Makefile identification in file browser
+- **Pattern matching** - Recognizes `Makefile`, `makefile`, `GNUmakefile`, and `*.mk` files
 
 ## Requirements
 
