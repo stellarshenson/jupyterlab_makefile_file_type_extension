@@ -1,8 +1,8 @@
 # JupyterLab Makefile Extension
 
-[![Github Actions Status](https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension/workflows/Build/badge.svg)](https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension/actions/workflows/build.yml)
-[![PyPI version](https://badge.fury.io/py/jupyterlab-makefile-file-type-extension.svg)](https://badge.fury.io/py/jupyterlab-makefile-file-type-extension)
-[![npm version](https://badge.fury.io/js/jupyterlab_makefile_file_type_extension.svg)](https://badge.fury.io/js/jupyterlab_makefile_file_type_extension)
+[![Github Actions Status](https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension/actions/workflows/build.yml/badge.svg)](https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension/actions/workflows/build.yml)
+[![npm version](https://badge.fury.io/js/jupyterlab_makefile_file_type_extension.svg)](https://www.npmjs.com/package/jupyterlab_makefile_file_type_extension)
+[![PyPI version](https://badge.fury.io/py/jupyterlab-makefile-file-type-extension.svg)](https://pypi.org/project/jupyterlab-makefile-file-type-extension/)
 
 A JupyterLab extension providing comprehensive Makefile support with syntax highlighting and custom file type recognition.
 
