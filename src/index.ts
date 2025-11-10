@@ -28,7 +28,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
   requires: [IEditorLanguageRegistry],
   activate: (app: JupyterFrontEnd, languages: IEditorLanguageRegistry) => {
     console.log(
-      'JupyterLab extension jupyterlab_makefile_file_type_extension is activated!'
+      '[jupyterlab_makefile_file_type_extension v1.0.25] Extension activated!'
     );
 
     // Register Makefile language support
@@ -36,24 +36,22 @@ const plugin: JupyterFrontEndPlugin<void> = {
       name: 'makefile',
       displayName: 'Makefile',
       mime: 'text/x-makefile',
-      extensions: ['.mk'],
-      filename: /^(Makefile|makefile|GNUmakefile)$/,
+      extensions: ['.mk', '.mak', '.make', '.makefile'],
+      filename: /^(Makefile|makefile|GNUmakefile|makefile\..*|.*\.(mk|mak|make|makefile))$/,
       support: new LanguageSupport(StreamLanguage.define(makefile))
     });
 
     // Register icon for Makefile file type
-    app.docRegistry.addFileType(
-      {
-        name: 'makefile',
-        displayName: 'Makefile',
-        mimeTypes: ['text/x-makefile'],
-        extensions: ['.mk'],
-        pattern: '^(Makefile|makefile|GNUmakefile)$',
-        fileFormat: 'text',
-        icon: makefileIcon
-      },
-      ['text/x-makefile']
-    );
+    app.docRegistry.addFileType({
+      name: 'makefile',
+      displayName: 'Makefile',
+      mimeTypes: ['text/x-makefile'],
+      extensions: ['.mk', '.mak', '.make', '.makefile'],
+      pattern: '^(Makefile|makefile|GNUmakefile|makefile\\..*|.*\\.(mk|mak|make|makefile))$',
+      fileFormat: 'text' as const,
+      contentType: 'file' as const,
+      icon: makefileIcon
+    });
   }
 };
 

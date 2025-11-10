@@ -7,16 +7,25 @@ const makeVariableRegex = /\$\([A-Za-z0-9_]+\)/;
 export const makefile: StreamParser<{
   inRecipe: boolean;
   inComment: boolean;
+  parenDepth: number;
 }> = {
   name: 'makefile',
 
-  startState: () => ({
-    inRecipe: false,
-    inComment: false
-  }),
+  startState: () => {
+    return {
+      inRecipe: false,
+      inComment: false,
+      parenDepth: 0
+    };
+  },
 
   token: (stream, state) => {
     const ch = stream.peek();
+
+    // Reset paren depth at start of line
+    if (stream.sol()) {
+      state.parenDepth = 0;
+    }
 
     // Line continuation backslash at end of line (must be last char)
     if (ch === '\\') {
@@ -24,7 +33,7 @@ export const makefile: StreamParser<{
       stream.next();
       // Check if this is truly at end of line (no trailing whitespace)
       if (stream.eol()) {
-        return 'keyword.control escape';
+        return 'escape';
       }
       // Not at EOL, backtrack
       stream.pos = pos;
@@ -36,19 +45,60 @@ export const makefile: StreamParser<{
       return 'comment';
     }
 
-    // Strings - handle before anything else
-    if (ch === '"' || ch === "'") {
-      const quote = stream.next();
-      while (!stream.eol()) {
-        const next = stream.next();
-        if (next === quote) {
-          break;
+    // Handle $( constructs - check this BEFORE anything else
+    if (ch === '$' && stream.match(/\$\(/, false)) {
+      stream.next(); // consume $
+      stream.next(); // consume (
+      state.parenDepth++;
+      return 'processingInstruction';
+    }
+
+    // Closing ) when inside $(...)
+    if (ch === ')' && state.parenDepth > 0) {
+      state.parenDepth--;
+      stream.next();
+      return 'processingInstruction';
+    }
+
+    // Strings - only parse when NOT inside $(...) constructs
+    // When inside $(...), skip quotes without treating them as strings
+    if (ch === '"') {
+      if (state.parenDepth === 0) {
+        stream.next(); // consume opening "
+        while (!stream.eol()) {
+          const next = stream.next();
+          if (next === '"') {
+            break; // found matching closing "
+          }
+          if (next === '\\') {
+            stream.next(); // skip escaped character
+          }
         }
-        if (next === '\\') {
-          stream.next();
-        }
+        return 'string';
+      } else {
+        // Inside $(...)  - just consume the quote as normal text
+        stream.next();
+        return 'atom'; // Use atom color for quotes inside shell commands
       }
-      return 'string';
+    }
+    if (ch === "'") {
+      if (state.parenDepth === 0) {
+        stream.next(); // consume opening '
+        while (!stream.eol()) {
+          const next = stream.next();
+          if (next === "'") {
+            break; // found matching closing '
+          }
+          if (next === '\\') {
+            stream.next(); // skip escaped character
+          }
+        }
+        return 'string';
+      } else {
+        // Inside $(...) - just consume the quote as normal text
+        stream.next();
+        return 'atom'; // Use atom color for quotes inside shell commands
+      }
     }
 
     // Recipe lines (commands starting with tab)
@@ -100,13 +150,13 @@ export const makefile: StreamParser<{
     if (stream.sol() || (stream.match(/^\s*/) && stream.sol())) {
       const targetMatch = stream.match(/^[a-zA-Z0-9_-]+(?=\s*:)/);
       if (targetMatch) {
-        return 'keyword.control strong';
+        return 'keyword strong';
       }
     }
 
     // Special targets (.PHONY, .DEFAULT_GOAL, etc.)
     if (stream.match(/^\.[A-Z_]+/)) {
-      return 'keyword.control';
+      return 'keyword';
     }
 
     // Variable references
@@ -118,15 +168,15 @@ export const makefile: StreamParser<{
       if (stream.match(/\$\(wildcard\b|\$\(patsubst\b|\$\(filter\b|\$\(subst\b|\$\(foreach\b/)) {
         return 'keyword';
       }
-      // Shell-style variables ${VAR}
+      // Shell-style variables ${VAR} - use member color (like Python class members)
       if (stream.match(shellVariableRegex)) {
-        return 'variableName.special';
+        return 'propertyName';
       }
-      // Make-style variables $(VAR)
+      // Make-style variables $(VAR) - use member color (like Python class members)
       if (stream.match(makeVariableRegex)) {
-        return 'variableName strong';
+        return 'propertyName';
       }
-      // Automatic variables $@, $<, etc.
+      // Automatic variables $@, $<, etc. - use special color
       if (stream.match(/\$[@<^+?*%|]/)) {
         return 'variableName.special';
       }
