@@ -5,7 +5,7 @@ import {
 import { IEditorLanguageRegistry } from '@jupyterlab/codemirror';
 import { LabIcon } from '@jupyterlab/ui-components';
 import { StreamLanguage, LanguageSupport } from '@codemirror/language';
-import { cmake } from '@codemirror/legacy-modes/mode/cmake';
+import { makefile } from './makefile-mode';
 
 // Import SVG icon as string
 const makefileIconStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -38,7 +38,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       mime: 'text/x-makefile',
       extensions: ['.mk'],
       filename: /^(Makefile|makefile|GNUmakefile)$/,
-      support: new LanguageSupport(StreamLanguage.define(cmake))
+      support: new LanguageSupport(StreamLanguage.define(makefile))
     });
 
     // Register icon for Makefile file type
