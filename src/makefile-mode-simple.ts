@@ -36,6 +36,11 @@ export const makefileSimple: StreamParser<{
       stream.skipToEnd();
       tokenType = 'comment';
     }
+    // Special targets (.PHONY, .DEFAULT_GOAL, etc.) - MUST check before regular targets
+    else if (stream.sol() && stream.match(/^\.[A-Z_]+/, false)) {
+      stream.match(/^\.[A-Z_]+/);
+      tokenType = 'builtin';
+    }
     // Variable assignments (e.g., TEST := ...) - MUST check before targets
     else if (stream.sol() && stream.match(/^[A-Z_][A-Z0-9_]*/, false)) {
       const varName = stream.match(/^[A-Z_][A-Z0-9_]*/);
@@ -56,6 +61,24 @@ export const makefileSimple: StreamParser<{
         tokenType = null;
       }
     }
+    // Target dependencies (everything after : on target line until EOL or #)
+    else if (!stream.sol() && lineText.match(/^[a-zA-Z0-9_\-\.]+:/) && ch !== '#' && !stream.eol()) {
+      // Check if we're past the colon on a target line
+      const colonPos = lineText.indexOf(':');
+      if (colonPos >= 0 && startPos > colonPos) {
+        // Consume until end of line or comment
+        if (ch === '#') {
+          // Let comment handler take over
+          tokenType = null;
+        } else {
+          stream.next();
+          tokenType = 'processingInstruction';
+        }
+      } else {
+        stream.next();
+        tokenType = null;
+      }
+    }
     // Operators
     else if (stream.match(/[:?+]?=/)) {
       tokenType = 'operator';
@@ -64,13 +87,37 @@ export const makefileSimple: StreamParser<{
     else if (stream.match(/:/)) {
       tokenType = 'operator';
     }
+    // Handle $$(( - shell arithmetic expansion (must check before $$()
+    else if (ch === '$' && stream.match(/\$\$\(\(/, false)) {
+      stream.next();
+      stream.next();
+      stream.next();
+      stream.next();
+      state.parenDepth += 2;
+      console.log(`  [DEPTH] pos=${startPos} $$(( -> depth=${state.parenDepth}`);
+      tokenType = 'property';
+    }
+    // Handle $$( - shell command substitution (must check before $()
+    else if (ch === '$' && stream.match(/\$\$\(/, false)) {
+      stream.next();
+      stream.next();
+      stream.next();
+      state.parenDepth++;
+      console.log(`  [DEPTH] pos=${startPos} $$( -> depth=${state.parenDepth}`);
+      tokenType = 'property';
+    }
     // Handle $( - MUST come before string handling
     else if (ch === '$' && stream.match(/\$\(/, false)) {
       stream.next();
       stream.next();
       state.parenDepth++;
       console.log(`  [DEPTH] pos=${startPos} $( -> depth=${state.parenDepth}`);
-      tokenType = 'processingInstruction';
+      tokenType = 'property';
+    }
+    // Handle $$ variables (e.g., $$HOME, $$PATH, $$cols)
+    else if (ch === '$' && stream.match(/\$\$[a-zA-Z_][a-zA-Z0-9_]*/, false)) {
+      stream.match(/\$\$[a-zA-Z_][a-zA-Z0-9_]*/);
+      tokenType = 'property';
     }
     // Track nested ( inside $(...)
     else if (ch === '(' && state.parenDepth > 0) {
@@ -81,12 +128,14 @@ export const makefileSimple: StreamParser<{
     }
     // Track ) inside $(...)
     else if (ch === ')' && state.parenDepth > 0) {
+      const nextCh = stream.peek();
       state.parenDepth--;
       stream.next();
       console.log(`  [DEPTH] pos=${startPos} ) inside $(...) -> depth=${state.parenDepth}`);
-      tokenType = state.parenDepth === 0 ? 'processingInstruction' : null;
+      // Color closing ) as property if: depth reaches 0, OR if next char is also ) and depth is 1
+      tokenType = (state.parenDepth === 0 || (state.parenDepth === 1 && nextCh === ')')) ? 'property' : null;
     }
-    // Inside $(...) - mark everything as processingInstruction
+    // Inside $(...) - mark everything as type
     else if (state.parenDepth > 0) {
       // Inside $(...)
       if (ch === '"') {
@@ -96,7 +145,7 @@ export const makefileSimple: StreamParser<{
           if (n === '"') break;
           if (n === '\\') stream.next();
         }
-        tokenType = 'processingInstruction';
+        tokenType = 'property';
       } else if (ch === "'") {
         stream.next();
         while (!stream.eol()) {
@@ -104,10 +153,10 @@ export const makefileSimple: StreamParser<{
           if (n === "'") break;
           if (n === '\\') stream.next();
         }
-        tokenType = 'processingInstruction';
+        tokenType = 'property';
       } else {
         stream.next();
-        tokenType = 'processingInstruction';
+        tokenType = 'property';
       }
     }
     // Strings - double quote (outside $(...)
