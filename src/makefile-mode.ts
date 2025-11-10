@@ -1,6 +1,8 @@
 import { StreamParser } from '@codemirror/language';
 
 const variableRegex = /\$[\({][A-Za-z0-9_]+[\)}]/;
+const shellVariableRegex = /\$\{[A-Za-z0-9_]+\}/;
+const makeVariableRegex = /\$\([A-Za-z0-9_]+\)/;
 
 export const makefile: StreamParser<{
   inRecipe: boolean;
@@ -20,6 +22,21 @@ export const makefile: StreamParser<{
     if (ch === '#') {
       stream.skipToEnd();
       return 'comment';
+    }
+
+    // Strings - handle before anything else
+    if (ch === '"' || ch === "'") {
+      const quote = stream.next();
+      while (!stream.eol()) {
+        const next = stream.next();
+        if (next === quote) {
+          break;
+        }
+        if (next === '\\') {
+          stream.next();
+        }
+      }
+      return 'string';
     }
 
     // Recipe lines (commands starting with tab)
@@ -82,39 +99,33 @@ export const makefile: StreamParser<{
 
     // Variable references
     if (ch === '$') {
-      if (stream.match(variableRegex)) {
-        return 'variableName';
+      // Make function calls like $(shell ...), $(wildcard ...)
+      if (stream.match(/\$\(shell\b/)) {
+        return 'keyword';
       }
-      if (stream.match(/\$[@<^+?*%]/)) {
+      if (stream.match(/\$\(wildcard\b|\$\(patsubst\b|\$\(filter\b|\$\(subst\b|\$\(foreach\b/)) {
+        return 'keyword';
+      }
+      // Shell-style variables ${VAR}
+      if (stream.match(shellVariableRegex)) {
         return 'variableName.special';
       }
+      // Make-style variables $(VAR)
+      if (stream.match(makeVariableRegex)) {
+        return 'variableName strong';
+      }
+      // Automatic variables $@, $<, etc.
+      if (stream.match(/\$[@<^+?*%|]/)) {
+        return 'variableName.special';
+      }
+      // Fallback for other $ uses
       stream.next();
       return 'variableName';
-    }
-
-    // Strings
-    if (ch === '"' || ch === "'") {
-      const quote = stream.next();
-      while (!stream.eol()) {
-        const next = stream.next();
-        if (next === quote) {
-          break;
-        }
-        if (next === '\\') {
-          stream.next();
-        }
-      }
-      return 'string';
     }
 
     // Operators
     if (stream.match(/[:=]/) || stream.match(/[?+:]=/)) {
       return 'operator';
-    }
-
-    // Functions (e.g., $(shell ...), $(wildcard ...))
-    if (stream.match(/\$\(shell\b|\$\(wildcard\b|\$\(patsubst\b|\$\(filter\b/)) {
-      return 'keyword';
     }
 
     stream.next();

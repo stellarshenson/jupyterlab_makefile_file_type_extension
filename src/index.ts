@@ -48,6 +48,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         displayName: 'Makefile',
         mimeTypes: ['text/x-makefile'],
         extensions: ['.mk'],
+        pattern: '^(Makefile|makefile|GNUmakefile)$',
         fileFormat: 'text',
         icon: makefileIcon
       },
