@@ -18,6 +18,17 @@ export const makefile: StreamParser<{
   token: (stream, state) => {
     const ch = stream.peek();
 
+    // Line continuation backslash at end of line
+    if (ch === '\\') {
+      const pos = stream.pos;
+      stream.next();
+      if (stream.eol()) {
+        return 'escape';
+      }
+      // Not at EOL, backtrack
+      stream.pos = pos;
+    }
+
     // Comments
     if (ch === '#') {
       stream.skipToEnd();
