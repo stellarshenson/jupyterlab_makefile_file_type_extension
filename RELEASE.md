@@ -1,80 +1,116 @@
-# Making a new release of jupyterlab_makefile_file_type_extension
+# Release v1.0.5
 
-The extension can be published to `PyPI` and `npm` manually or using the [Jupyter Releaser](https://github.com/jupyter-server/jupyter_releaser).
+## Overview
 
-## Manual release
+Initial stable release of the JupyterLab Makefile Extension providing comprehensive syntax highlighting and file type support for Makefiles in JupyterLab 4.
 
-### Python package
+## What's New
 
-This extension can be distributed as Python packages. All of the Python
-packaging instructions are in the `pyproject.toml` file to wrap your extension in a
-Python package. Before generating a package, you first need to install some tools:
+This release introduces a complete Makefile editing experience in JupyterLab with intelligent syntax highlighting and custom file type recognition.
+
+**Custom Syntax Highlighting**:
+- Purpose-built CodeMirror language mode with accurate token recognition
+- Target definitions highlighted in bold with distinct keyword styling
+- Variable references colored differently: Make-style `$(VAR)` vs shell-style `${VAR}`
+- Automatic variables (`$@`, `$<`, `$^`) highlighted distinctly
+- Make functions (`$(shell ...)`, `$(wildcard ...)`, `$(patsubst ...)`) recognized as keywords
+- Line continuation backslashes (`\`) at end of lines highlighted prominently
+- Quoted strings properly recognized throughout
+- Tab-indented recipe lines distinguished from regular content
+
+**File Type Support**:
+- Recognizes `Makefile`, `makefile`, `GNUmakefile`, and `*.mk` files
+- VS Code-style bold red "M" icon for easy identification in file browser
+- Proper MIME type registration (`text/x-makefile`)
+
+**Developer Experience**:
+- Improved code readability with semantic highlighting
+- Visual aids for complex Makefile constructs
+- Better distinction between different syntax elements
+
+## Requirements
+
+- JupyterLab >= 4.0.0
+
+## Installation
+
+### From PyPI
+
+```bash
+pip install jupyterlab-makefile-file-type-extension
+```
+
+### From npm
+
+```bash
+npm install jupyterlab_makefile_file_type_extension
+```
+
+## Repository
+
+https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension
+
+---
+
+# Release Process Documentation
+
+For maintainers: see below for instructions on creating new releases.
+
+## Manual Release
+
+### Python Package
+
+Install build tools:
 
 ```bash
 pip install build twine hatch
 ```
 
-Bump the version using `hatch`. By default this will create a tag.
-See the docs on [hatch-nodejs-version](https://github.com/agoose77/hatch-nodejs-version#semver) for details.
+Bump version using hatch:
 
 ```bash
 hatch version <new-version>
 ```
 
-Make sure to clean up all the development files before building the package:
+Clean development files:
 
 ```bash
 jlpm clean:all
-```
-
-You could also clean up the local git repository:
-
-```bash
 git clean -dfX
 ```
 
-To create a Python source package (`.tar.gz`) and the binary package (`.whl`) in the `dist/` directory, do:
+Build package:
 
 ```bash
 python -m build
 ```
 
-> `python setup.py sdist bdist_wheel` is deprecated and will not work for this package.
-
-Then to upload the package to PyPI, do:
+Upload to PyPI:
 
 ```bash
 twine upload dist/*
 ```
 
-### NPM package
-
-To publish the frontend part of the extension as a NPM package, do:
+### NPM Package
 
 ```bash
 npm login
 npm publish --access public
 ```
 
-## Automated releases with the Jupyter Releaser
+## Automated Releases
 
-The extension repository should already be compatible with the Jupyter Releaser. But
-the GitHub repository and the package managers need to be properly set up. Please
-follow the instructions of the Jupyter Releaser [checklist](https://jupyter-releaser.readthedocs.io/en/latest/how_to_guides/convert_repo_from_repo.html).
+The repository is compatible with Jupyter Releaser:
 
-Here is a summary of the steps to cut a new release:
+1. Go to Actions panel
+2. Run "Step 1: Prep Release" workflow
+3. Check draft changelog
+4. Run "Step 2: Publish Release" workflow
 
-- Go to the Actions panel
-- Run the "Step 1: Prep Release" workflow
-- Check the draft changelog
-- Run the "Step 2: Publish Release" workflow
+See [Jupyter Releaser documentation](https://jupyter-releaser.readthedocs.io/en/latest/get_started/making_release_from_repo.html) for details.
 
-> [!NOTE]
-> Check out the [workflow documentation](https://jupyter-releaser.readthedocs.io/en/latest/get_started/making_release_from_repo.html)
-> for more information.
+## Publishing to conda-forge
 
-## Publishing to `conda-forge`
+For initial submission: https://conda-forge.org/docs/maintainer/adding_pkgs.html
 
-If the package is not on conda forge yet, check the documentation to learn how to add it: https://conda-forge.org/docs/maintainer/adding_pkgs.html
-
-Otherwise a bot should pick up the new version publish to PyPI, and open a new PR on the feedstock repository automatically.
+For updates: Bot automatically opens PR on feedstock when new PyPI version is detected.
