@@ -1,23 +1,26 @@
-# Release v1.0.5
+# Release v1.0.72
 
 ## Overview
 
-Initial stable release of the JupyterLab Makefile Extension providing comprehensive syntax highlighting and file type support for Makefiles in JupyterLab 4.
+Production-ready JupyterLab Makefile Extension providing comprehensive syntax highlighting and file type support for Makefiles in JupyterLab 4, with extensive support for Make-specific syntax including conditionals, variables, shell constructs, and nested expressions.
 
 ## What's New
 
-This release introduces a complete Makefile editing experience in JupyterLab with intelligent syntax highlighting and custom file type recognition.
+This release provides a complete Makefile editing experience in JupyterLab with intelligent syntax highlighting and custom file type recognition.
 
 **Custom Syntax Highlighting**:
-- Purpose-built CodeMirror language mode with accurate token recognition for Makefile syntax
+- Purpose-built CodeMirror 6 StreamParser with accurate token recognition for Makefile syntax
 - Target definitions (`build:`, `install:`, etc.) highlighted in bold with distinct keyword styling
-- Variable references colored differently - Make-style `$(VAR)` vs shell-style `${VAR}`
-- Automatic variables (`$@`, `$<`, `$^`, `$*`) highlighted with special styling
-- Make functions (`$(shell ...)`, `$(wildcard ...)`, `$(patsubst ...)`, `$(filter ...)`, `$(subst ...)`, `$(foreach ...)`) recognized as keywords
-- Line continuation backslashes (`\`) at end of lines highlighted prominently with keyword.control escape styling
-- Single and double quoted strings properly recognized throughout Makefile content
-- Tab-indented recipe lines (commands) distinguished from regular Makefile directives
-- Special targets (`.PHONY`, `.DEFAULT_GOAL`) properly highlighted
+- Target dependencies after `:` highlighted as processingInstruction
+- Variable references colored with property token - `$(...)`, `$$VARIABLE`, `$$(...)`, `$$((...))`
+- Proper depth tracking for nested Make constructs like `$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))`
+- Make conditional keywords (`ifeq`, `ifneq`, `ifdef`, `ifndef`, `else`, `endif`) highlighted as builtin
+- Special targets (`.PHONY`, `.DEFAULT_GOAL`) highlighted as builtin
+- Silent recipe commands with `@` prefix (e.g., `@echo`, `@mkdir`) highlighted as builtin
+- Line continuation backslashes (`\`) at end of lines highlighted as builtin, even inside strings
+- Single and double quoted strings properly recognized with correct quote matching
+- Strings inside `$(...)` constructs handled correctly without breaking syntax highlighting
+- Tab-indented recipe lines distinguished from regular Makefile directives
 
 **File Type Support**:
 - Automatic recognition of `Makefile`, `makefile`, `GNUmakefile`, and `*.mk` files
