@@ -48,6 +48,11 @@ export const makefileSimple: StreamParser<{
       stream.match(/^\.[A-Z_]+/);
       tokenType = 'builtin';
     }
+    // Make conditional keywords (ifeq, ifneq, ifdef, ifndef, else, endif)
+    else if (stream.sol() && stream.match(/^(ifeq|ifneq|ifdef|ifndef|else|endif)\b/, false)) {
+      stream.match(/^(ifeq|ifneq|ifdef|ifndef|else|endif)\b/);
+      tokenType = 'builtin';
+    }
     // Variable assignments (e.g., TEST := ...) - MUST check before targets
     else if (stream.sol() && stream.match(/^[A-Z_][A-Z0-9_]*/, false)) {
       const varName = stream.match(/^[A-Z_][A-Z0-9_]*/);

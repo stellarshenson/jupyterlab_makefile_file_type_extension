@@ -52,6 +52,9 @@ This journal tracks substantive work on documents, diagrams, and documentation c
 16. **Task - Trailing Backslash Line Continuation Support**: Added syntax highlighting for trailing backslash line continuations in all contexts<br>
     **Result**: Implemented recognition of trailing backslash (`\`) when it appears as the last character on a line, colored as `builtin` token type. Modified string parsing logic (both inside and outside `$(...)` constructs) to detect when a backslash is at end of line using `stream.backUp(1)` to leave it unconsumed by the string token. This allows the backslash to be tokenized separately as a line continuation marker. Applies to strings with double quotes, single quotes, and all other contexts. The backslash receives distinct highlighting regardless of whether it appears in recipe commands, variable assignments, target dependencies, or within quoted strings. Version 1.0.69.
 
+17. **Task - Make Conditional Keywords Support**: Added syntax highlighting for Make conditional directives<br>
+    **Result**: Implemented recognition of Make conditional keywords (`ifeq`, `ifneq`, `ifdef`, `ifndef`, `else`, `endif`) when they appear at the start of a line. All conditional keywords are colored as `builtin` token type, providing consistent highlighting with other Make directives like `.PHONY` and `.DEFAULT_GOAL`. Uses word boundary check (`\b`) to ensure proper keyword matching. Version 1.0.71. Tagged as STABLE_v1.0.71.
+
 ---
 
 ## Release v1.0.66
