@@ -12,19 +12,14 @@ A JupyterLab extension providing comprehensive Makefile support with syntax high
 
 ## Features
 
-This extension provides comprehensive Makefile editing support in JupyterLab with accurate syntax highlighting and file type recognition.
+Comprehensive Makefile editing support in JupyterLab with syntax highlighting that distinguishes targets, variables, conditionals, and shell constructs. Recognizes standard Makefile names (`Makefile`, `makefile`, `GNUmakefile`) and `.mk` files with a distinctive red "M" icon in the file browser.
 
-**Core capabilities**:
-- Custom CodeMirror 6 syntax highlighter with target, variable, and function recognition
-- Build targets (`build:`, `install:`) in bold keyword styling
-- Make constructs (`$(...)`, `$$VARIABLE`, `$$(...)`, `$$((...)`) colored as property tokens
-- Conditional keywords (`ifeq`, `ifdef`, `else`, `endif`) highlighted as builtin
-- Silent commands with `@` prefix (e.g., `@echo`) and `.PHONY` targets as builtin
-- Target dependencies after `:` as processingInstruction
-- Trailing backslash line continuations as builtin
-- String parsing with proper quote matching inside and outside shell constructs
-- VS Code-style bold red "M" icon in file browser
-- Recognizes `Makefile`, `makefile`, `GNUmakefile`, and `*.mk` files
+**Highlighting coverage**:
+- Build targets and dependencies
+- Variable references and shell constructs
+- Conditional directives
+- Special targets and silent commands
+- Line continuations and quoted strings
 
 ## Requirements
 
