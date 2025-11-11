@@ -2,7 +2,7 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
-## v1.0.76 (2025-11-10)
+## v1.0.80 (2025-11-10)
 
 ### Features
 
@@ -23,5 +23,12 @@
 - Simplified closing parenthesis logic to color all ) inside $(…) as property
 - Modified string parsing to detect trailing backslash and exclude from string tokens
 - Disabled debug console.log statements for production use
+
+### Documentation
+
+- Add comprehensive tab configuration instructions to README
+- Clarify that all recipe commands require tab indentation (not spaces)
+- Streamline features section following modus primaris principles
+- Separate file recognition and icon details into distinct section
 
 <!-- <END NEW CHANGELOG ENTRY> -->
