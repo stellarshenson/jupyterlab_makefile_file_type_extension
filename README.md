@@ -42,7 +42,7 @@ pip install jupyterlab_makefile_file_type_extension
 
 **IMPORTANT: Configure Tab Character Usage**
 
-Makefiles require tab characters for recipe indentation - spaces will cause syntax errors. After installing this extension, configure JupyterLab to use tabs:
+Makefiles require tab characters for recipe command indentation. Recipe lines starting with spaces instead of tabs will cause Make execution to fail with "missing separator" errors. Configure JupyterLab to use tabs:
 
 1. Open JupyterLab Settings → Settings Editor
 2. Navigate to **Text Editor** section
@@ -61,7 +61,7 @@ Alternatively, add this to your JupyterLab settings JSON:
 }
 ```
 
-**Note**: The syntax highlighter in this extension requires tab characters before the `@` prefix in silent commands (e.g., `@echo`) to provide proper highlighting. Using spaces will result in no syntax highlighting for these commands and may cause Makefile execution errors.
+**Note**: All recipe commands (lines that execute shell commands under targets) MUST start with a tab character. The syntax highlighter requires tab-indented recipe lines for proper highlighting - space-indented recipes will not be highlighted and will fail during Make execution.
 
 ## Uninstall
 
