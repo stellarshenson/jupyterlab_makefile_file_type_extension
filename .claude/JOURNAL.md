@@ -61,6 +61,9 @@ This journal tracks substantive work on documents, diagrams, and documentation c
 19. **Task - @ Prefix Recognition for Recipe Commands**: Implemented @ prefix recognition for silent recipe commands with proper tab enforcement<br>
     **Result**: Added pattern `/^\t@[a-zA-Z_][a-zA-Z0-9_-]*/` to recognize recipe commands with @ prefix (e.g., `@echo`, `@mkdir`). Pattern strictly requires tab character before @ to maintain proper Makefile syntax compliance, as spaces before recipe commands break Makefile execution. Both the `@` symbol and command name are highlighted as `builtin` token type. Version 1.0.77.
 
+20. **Task - README Documentation Updates**: Enhanced README with tab configuration instructions and simplified features section<br>
+    **Result**: Added comprehensive Configuration section explaining JupyterLab Text Editor settings for tab character usage. Emphasized that all recipe commands must start with tabs (not spaces) to prevent "missing separator" errors during Make execution. Streamlined Features section following modus primaris principles - removed technical implementation details, separated file recognition (Makefile names and extensions) from highlighting coverage. Clear, brief bullet points focus on what the extension does rather than how. Version 1.0.80.
+
 ---
 
 ## Release v1.0.66
