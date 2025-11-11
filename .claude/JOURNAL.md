@@ -55,6 +55,9 @@ This journal tracks substantive work on documents, diagrams, and documentation c
 17. **Task - Make Conditional Keywords Support**: Added syntax highlighting for Make conditional directives<br>
     **Result**: Implemented recognition of Make conditional keywords (`ifeq`, `ifneq`, `ifdef`, `ifndef`, `else`, `endif`) when they appear at the start of a line. All conditional keywords are colored as `builtin` token type, providing consistent highlighting with other Make directives like `.PHONY` and `.DEFAULT_GOAL`. Uses word boundary check (`\b`) to ensure proper keyword matching. Version 1.0.71. Tagged as STABLE_v1.0.71.
 
+18. **Task - Nested Parenthesis Highlighting Fix**: Fixed incorrect null styling for closing parentheses in nested $(…) constructs<br>
+    **Result**: Fixed bug where closing parentheses in deeply nested Make constructs like `$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))` were receiving null token type instead of `property`. Root cause was conditional logic that only colored `)` as `property` when depth reached 0 or in special `$$((` ... `))` patterns. Simplified logic to color ALL closing `)` inside any `$(...)` construct (when `parenDepth > 0`) as `property` token type. This ensures consistent highlighting for all levels of nesting in Make function calls. Version 1.0.72.
+
 ---
 
 ## Release v1.0.66

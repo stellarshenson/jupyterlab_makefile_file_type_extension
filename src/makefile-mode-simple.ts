@@ -140,12 +140,11 @@ export const makefileSimple: StreamParser<{
     }
     // Track ) inside $(...)
     else if (ch === ')' && state.parenDepth > 0) {
-      const nextCh = stream.peek();
       state.parenDepth--;
       stream.next();
       // console.log(`  [DEPTH] pos=${startPos} ) inside $(...) -> depth=${state.parenDepth}`);
-      // Color closing ) as property if: depth reaches 0, OR if next char is also ) and depth is 1
-      tokenType = (state.parenDepth === 0 || (state.parenDepth === 1 && nextCh === ')')) ? 'property' : null;
+      // Color all closing ) inside $(...) as property
+      tokenType = 'property';
     }
     // Inside $(...) - mark everything as type
     else if (state.parenDepth > 0) {
