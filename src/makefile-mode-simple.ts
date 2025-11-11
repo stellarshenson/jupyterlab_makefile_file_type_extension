@@ -37,9 +37,9 @@ export const makefileSimple: StreamParser<{
       tokenType = 'comment';
     }
     // Recipe commands with @ prefix (e.g., @echo, @mkdir)
-    // Accept both tab and spaces (though Makefiles should use tabs)
-    else if (stream.sol() && stream.match(/^[\t ]+@[a-zA-Z_][a-zA-Z0-9_-]*/, false)) {
-      stream.match(/^[\t ]+/);  // Consume tab or spaces
+    // Only accept tab (proper Makefile syntax)
+    else if (stream.sol() && stream.match(/^\t@[a-zA-Z_][a-zA-Z0-9_-]*/, false)) {
+      stream.match(/^\t/);  // Consume tab
       stream.match(/^@/);   // Consume @
       stream.match(/^[a-zA-Z_][a-zA-Z0-9_-]*/);  // Consume command
       tokenType = 'builtin';

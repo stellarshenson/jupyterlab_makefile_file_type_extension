@@ -58,8 +58,8 @@ This journal tracks substantive work on documents, diagrams, and documentation c
 18. **Task - Nested Parenthesis Highlighting Fix**: Fixed incorrect null styling for closing parentheses in nested $(…) constructs<br>
     **Result**: Fixed bug where closing parentheses in deeply nested Make constructs like `$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))` were receiving null token type instead of `property`. Root cause was conditional logic that only colored `)` as `property` when depth reached 0 or in special `$$((` ... `))` patterns. Simplified logic to color ALL closing `)` inside any `$(...)` construct (when `parenDepth > 0`) as `property` token type. This ensures consistent highlighting for all levels of nesting in Make function calls. Version 1.0.72.
 
-19. **Task - Flexible @ Prefix Recognition**: Updated parser to accept both tabs and spaces before @ prefix in recipe commands<br>
-    **Result**: Modified recipe command recognition pattern from `/^\t@/` (tab only) to `/^[\t ]+@/` (tab or spaces) to handle files with inconsistent indentation. While Makefile syntax technically requires tabs for recipe lines, this change makes the parser more lenient and provides consistent syntax highlighting even when files use spaces. Pattern now matches one or more tabs or spaces before the `@` symbol, followed by the command name. Version 1.0.75.
+19. **Task - @ Prefix Recognition for Recipe Commands**: Implemented @ prefix recognition for silent recipe commands with proper tab enforcement<br>
+    **Result**: Added pattern `/^\t@[a-zA-Z_][a-zA-Z0-9_-]*/` to recognize recipe commands with @ prefix (e.g., `@echo`, `@mkdir`). Pattern strictly requires tab character before @ to maintain proper Makefile syntax compliance, as spaces before recipe commands break Makefile execution. Both the `@` symbol and command name are highlighted as `builtin` token type. Version 1.0.77.
 
 ---
 

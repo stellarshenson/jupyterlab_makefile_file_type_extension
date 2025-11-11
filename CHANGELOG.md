@@ -2,13 +2,13 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
-## v1.0.74 (2025-11-10)
+## v1.0.76 (2025-11-10)
 
 ### Features
 
 - Add Make conditional keywords support (ifeq, ifneq, ifdef, ifndef, else, endif)
 - Add trailing backslash line continuation highlighting in all contexts
-- Add recipe command @ prefix support for silent commands
+- Add recipe command @ prefix support for silent commands (tab-indented only)
 - Add target dependency highlighting as processingInstruction
 - Add support for $$VARIABLE, $$(…), and $$((…)) constructs
 
