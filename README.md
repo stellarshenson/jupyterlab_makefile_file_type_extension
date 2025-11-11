@@ -12,7 +12,12 @@ A JupyterLab extension providing comprehensive Makefile support with syntax high
 
 ## Features
 
-Comprehensive Makefile editing support in JupyterLab with syntax highlighting that distinguishes targets, variables, conditionals, and shell constructs. Recognizes standard Makefile names (`Makefile`, `makefile`, `GNUmakefile`) and `.mk` files with a distinctive red "M" icon in the file browser.
+Comprehensive Makefile editing support in JupyterLab with syntax highlighting that distinguishes targets, variables, conditionals, and shell constructs.
+
+**File recognition**:
+- Standard names: `Makefile`, `makefile`, `GNUmakefile`
+- Extensions: `*.mk`, `*.mak`, `*.make`
+- Custom red "M" icon in file browser
 
 **Highlighting coverage**:
 - Build targets and dependencies
