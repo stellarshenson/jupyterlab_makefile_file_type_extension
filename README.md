@@ -47,17 +47,14 @@ Makefiles require tab characters for recipe command indentation. Recipe lines st
 
 1. Open JupyterLab Settings → Settings Editor
 2. Navigate to **Text Editor** section
-3. Set the following options:
-   - **Insert Spaces**: Uncheck this option (or set to `false` in JSON)
-   - **Tab Size**: Set to `4` (or your preferred tab width)
+3. Set **Indentation Unit** to `Tab`
 
-Alternatively, add this to your JupyterLab settings JSON:
+Alternatively, add this to your JupyterLab Text Editor settings JSON:
 
 ```json
 {
   "editorConfig": {
-    "insertSpaces": false,
-    "tabSize": 4
+    "indentUnit": "Tab"
   }
 }
 ```
