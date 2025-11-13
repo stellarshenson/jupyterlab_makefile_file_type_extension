@@ -1,11 +1,11 @@
 # jupyterlab_makefile_file_type_extension
 
-[![Brought To You By KOLOMOLO](https://img.shields.io/badge/Brought%20To%20You%20By-KOLOMOLO-00ffff?style=flat)](https://kolomolo.com)
 [![GitHub Actions](https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension/actions/workflows/build.yml/badge.svg)](https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/jupyterlab_makefile_file_type_extension.svg)](https://www.npmjs.com/package/jupyterlab_makefile_file_type_extension)
 [![PyPI version](https://img.shields.io/pypi/v/jupyterlab-makefile-file-type-extension.svg)](https://pypi.org/project/jupyterlab-makefile-file-type-extension/)
 [![Total PyPI downloads](https://static.pepy.tech/badge/jupyterlab-makefile-file-type-extension)](https://pepy.tech/project/jupyterlab-makefile-file-type-extension)
 [![JupyterLab 4](https://img.shields.io/badge/JupyterLab-4-orange.svg)](https://jupyterlab.readthedocs.io/en/stable/)
+[![Brought To You By KOLOMOLO](https://img.shields.io/badge/Brought%20To%20You%20By-KOLOMOLO-00ffff?style=flat)](https://kolomolo.com)
 
 A JupyterLab extension providing comprehensive Makefile support with syntax highlighting and custom file type recognition.
 
