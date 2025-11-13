@@ -54,22 +54,13 @@ Alternatively, add this to your JupyterLab Text Editor settings JSON:
 ```json
 {
   "editorConfig": {
-    "indentUnit": "Tab"
+    "indentUnit": "Tab",
+    "tabSize": 4
   }
 }
 ```
 
 **Note**: All recipe commands (lines that execute shell commands under targets) MUST start with a tab character. The syntax highlighter requires tab-indented recipe lines for proper highlighting - space-indented recipes will not be highlighted and will fail during Make execution.
-
-## Uninstall
-
-To remove the extension, execute:
-
-```bash
-pip uninstall jupyterlab_makefile_file_type_extension
-```
-
-## Contributing
 
 ### Development install
 
