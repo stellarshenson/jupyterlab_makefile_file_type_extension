@@ -8,7 +8,7 @@ import { StreamLanguage, LanguageSupport } from '@codemirror/language';
 import { makefileSimple as makefile } from './makefile-mode-simple';
 
 // Import SVG icon as string - bold capital M like VS Code
-const makefileIconStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+const makefileIconStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 22">
   <text x="12" y="22" font-size="20" font-weight="900" text-anchor="middle" fill="#d84a4a" font-family="Arial, sans-serif">M</text>
 </svg>`;
 
