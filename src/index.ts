@@ -5,6 +5,7 @@ import {
 import { IEditorLanguageRegistry } from '@jupyterlab/codemirror';
 import { LabIcon } from '@jupyterlab/ui-components';
 import { StreamLanguage, LanguageSupport } from '@codemirror/language';
+import { shell } from '@codemirror/legacy-modes/mode/shell';
 import { makefileSimple as makefile } from './makefile-mode-simple';
 
 // Makefile icon - file with gears (from text-x-makefile-svgrepo-com.svg)
@@ -49,6 +50,17 @@ const plugin: JupyterFrontEndPlugin<void> = {
       fileFormat: 'text' as const,
       contentType: 'file' as const,
       icon: makefileIcon
+    });
+
+    // Register env files as shell script for syntax highlighting only (no icon)
+    // Matches: .env, .env.*, env.*, *.env
+    languages.addLanguage({
+      name: 'dotenv',
+      displayName: 'Environment File',
+      mime: 'text/x-dotenv',
+      extensions: [],
+      filename: /^(\.env|\.env\..*|env\..*|.*\.env)$/,
+      support: new LanguageSupport(StreamLanguage.define(shell))
     });
   }
 };

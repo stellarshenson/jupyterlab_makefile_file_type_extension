@@ -67,6 +67,9 @@ This journal tracks substantive work on documents, diagrams, and documentation c
 21. **Task - Icon Replacement with Gear File Icon**: Replaced M letter icon with config/gear file icon from svgrepo<br>
     **Result**: Replaced simple bold "M" text icon with config file icon featuring document shape with gear symbols. Sourced from svgrepo (text-x-makefile-svgrepo-com.svg), simplified to single path with `fill:#c2544f` (reddish-brown). Set viewBox to `"23 11 82 106"` to eliminate spacing around content. Removed all metadata, namespaces, and redundant elements from source SVG. Published as v1.0.94.
 
+22. **Task - Environment File Shell Syntax Highlighting**: Added shell syntax highlighting for .env files<br>
+    **Result**: Registered env files with shell syntax highlighting using CodeMirror legacy shell mode. Matches patterns: `.env`, `.env.*` (e.g., `.env.local`), `env.*`, and `*.env`. Uses unique mime type `text/x-dotenv` to avoid conflicts. Language-only registration (no icon change). Published as v1.0.98.
+
 ---
 
 ## Release v1.0.66
