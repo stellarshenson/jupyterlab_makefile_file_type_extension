@@ -2,6 +2,19 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## [1.0.100] - 2026-10-30
+
+### Changed
+
+- The npm package is now `@stellarshenson/jupyterlab-makefile-file-type-extension`; the labextension path and the plugin id take the same name
+- The Python module and the PyPI distribution keep their names, so `pip install` does not change
+- Moved to extension template v4.6.5 and Makefile 1.46; the build uses `@jupyter/builder` and lint uses ESLint 9
+- Requires JupyterLab >= 4.6.0 and Python >= 3.10
+
+### Fixed
+
+- The plugin id no longer holds an underscore, which the URI parser of JupyterLab 4.6.5 refuses in an unscoped id
+
 ## v1.0.80 (2025-11-10)
 
 ### Features
