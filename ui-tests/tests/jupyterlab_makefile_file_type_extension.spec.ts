@@ -16,6 +16,10 @@ test('should emit an activation console message', async ({ page }) => {
   await page.goto();
 
   expect(
-    logs.filter(s => s === 'JupyterLab extension jupyterlab_makefile_file_type_extension is activated!')
+    logs.filter(
+      s =>
+        s ===
+        'JupyterLab extension @stellarshenson/jupyterlab-makefile-file-type-extension is activated!'
+    )
   ).toHaveLength(1);
 });

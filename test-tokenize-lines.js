@@ -182,11 +182,14 @@ function displayTokens(lineNum, line, tokens) {
 
 // Test lines from test.mk
 const testLines = [
-  { num: 3, line: 'VERSION := $(shell command -v node >/dev/null 2>&1 && node -p "require(\'./package.json\').version" || echo "0.0.0")' },
+  {
+    num: 3,
+    line: 'VERSION := $(shell command -v node >/dev/null 2>&1 && node -p "require(\'./package.json\').version" || echo "0.0.0")'
+  },
   { num: 14, line: 'TEST := "simple string"' },
   { num: 20, line: "TEST2 := 'simple single'" },
   { num: 21, line: 'TEST3 := "string with \'single\' inside"' },
-  { num: 22, line: "TEST4 := 'string with \"double\" inside'" }
+  { num: 22, line: 'TEST4 := \'string with "double" inside\'' }
 ];
 
 console.log('\n' + '#'.repeat(80));

@@ -6,3 +6,5 @@ node_modules
 jupyterlab_makefile_file_type_extension
 eslint.config.mjs
 .venv
+.claude
+.agents

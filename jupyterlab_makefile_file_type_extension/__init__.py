@@ -12,5 +12,5 @@ except ImportError:
 def _jupyter_labextension_paths():
     return [{
         "src": "labextension",
-        "dest": "jupyterlab_makefile_file_type_extension"
+        "dest": "@stellarshenson/jupyterlab-makefile-file-type-extension"
     }]

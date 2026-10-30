@@ -13,6 +13,7 @@ configure_jupyter_server(c)
 
 c.ServerApp.port = int(os.environ.get("JUPYTER_TEST_PORT") or "8888")
 c.LabApp.user_settings_dir = mkdtemp(prefix="galata-settings-")
+c.FileContentsManager.delete_to_trash = False
 
 # Uncomment to set server log level to debug level
 # c.ServerApp.log_level = "DEBUG"

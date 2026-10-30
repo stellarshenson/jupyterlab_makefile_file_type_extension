@@ -1,7 +1,7 @@
 # jupyterlab_makefile_file_type_extension
 
 [![GitHub Actions](https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension/actions/workflows/build.yml/badge.svg)](https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension/actions/workflows/build.yml)
-[![npm version](https://img.shields.io/npm/v/jupyterlab_makefile_file_type_extension.svg)](https://www.npmjs.com/package/jupyterlab_makefile_file_type_extension)
+[![npm version](https://img.shields.io/npm/v/@stellarshenson/jupyterlab-makefile-file-type-extension.svg)](https://www.npmjs.com/package/@stellarshenson/jupyterlab-makefile-file-type-extension)
 [![PyPI version](https://img.shields.io/pypi/v/jupyterlab-makefile-file-type-extension.svg)](https://pypi.org/project/jupyterlab-makefile-file-type-extension/)
 [![Total PyPI downloads](https://static.pepy.tech/badge/jupyterlab-makefile-file-type-extension)](https://pepy.tech/project/jupyterlab-makefile-file-type-extension)
 [![JupyterLab 4](https://img.shields.io/badge/JupyterLab-4-orange.svg)](https://jupyterlab.readthedocs.io/en/stable/)
@@ -19,11 +19,13 @@ A JupyterLab extension providing comprehensive Makefile support with syntax high
 Comprehensive Makefile editing support in JupyterLab with syntax highlighting that distinguishes targets, variables, conditionals, and shell constructs.
 
 **File recognition**:
+
 - Standard names: `Makefile`, `makefile`, `GNUmakefile`
 - Extensions: `*.mk`, `*.mak`, `*.make`
 - Custom red "M" icon in file browser
 
 **Highlighting coverage**:
+
 - Build targets and dependencies
 - Variable references and shell constructs
 - Conditional directives

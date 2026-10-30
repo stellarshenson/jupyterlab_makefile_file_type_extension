@@ -1,6 +1,6 @@
 import { StreamParser } from '@codemirror/language';
 
-const variableRegex = /\$[\({][A-Za-z0-9_]+[\)}]/;
+const variableRegex = /\$[({][A-Za-z0-9_]+[)}]/;
 const shellVariableRegex = /\$\{[A-Za-z0-9_]+\}/;
 
 export const makefile: StreamParser<{
@@ -53,7 +53,12 @@ export const makefile: StreamParser<{
       state.parenDepth++;
 
       // Check for known Make functions
-      if (stream.match(/shell\b|wildcard\b|patsubst\b|filter\b|subst\b|foreach\b/, false)) {
+      if (
+        stream.match(
+          /shell\b|wildcard\b|patsubst\b|filter\b|subst\b|foreach\b/,
+          false
+        )
+      ) {
         stream.match(/\w+/);
         return 'keyword';
       }
@@ -79,7 +84,9 @@ export const makefile: StreamParser<{
     if (ch === '"') {
       const pos = stream.pos;
       const line = (stream as any).string;
-      console.log(`[STRING] pos=${pos} depth=${state.parenDepth} char="${ch}" line="${line}"`);
+      console.log(
+        `[STRING] pos=${pos} depth=${state.parenDepth} char="${ch}" line="${line}"`
+      );
       if (state.parenDepth === 0) {
         stream.next();
         while (!stream.eol()) {
@@ -135,7 +142,11 @@ export const makefile: StreamParser<{
         return 'variableName';
       }
       // Shell operators and keywords
-      if (stream.match(/^(if|then|else|fi|for|in|do|done|case|esac|while|until)\b/)) {
+      if (
+        stream.match(
+          /^(if|then|else|fi|for|in|do|done|case|esac|while|until)\b/
+        )
+      ) {
         return 'keyword';
       }
       if (stream.match(/^(echo|cd|mkdir|rm|cp|mv|grep|sed|awk|make)\b/)) {

@@ -1,7 +1,7 @@
 {
-  "name": "jupyterlab_makefile_file_type_extension-ui-tests",
+  "name": "@stellarshenson/jupyterlab-makefile-file-type-extension-ui-tests",
   "version": "1.0.0",
-  "description": "JupyterLab jupyterlab_makefile_file_type_extension Integration Tests",
+  "description": "JupyterLab @stellarshenson/jupyterlab-makefile-file-type-extension Integration Tests",
   "private": true,
   "scripts": {
     "start": "jupyter lab --config jupyter_server_test_config.py",

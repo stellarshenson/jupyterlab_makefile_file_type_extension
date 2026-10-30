@@ -4,7 +4,12 @@ export const makefileSimple: StreamParser<{
   parenDepth: number;
   lastLineStart: number;
   lastLineText: string;
-  lineTokens: Array<{start: number, end: number, text: string, type: string | null}>;
+  lineTokens: Array<{
+    start: number;
+    end: number;
+    text: string;
+    type: string | null;
+  }>;
 }> = {
   name: 'makefile',
 
@@ -38,10 +43,13 @@ export const makefileSimple: StreamParser<{
     }
     // Recipe commands with @ prefix (e.g., @echo, @mkdir)
     // Only accept tab (proper Makefile syntax)
-    else if (stream.sol() && stream.match(/^\t@[a-zA-Z_][a-zA-Z0-9_-]*/, false)) {
-      stream.match(/^\t/);  // Consume tab
-      stream.match(/^@/);   // Consume @
-      stream.match(/^[a-zA-Z_][a-zA-Z0-9_-]*/);  // Consume command
+    else if (
+      stream.sol() &&
+      stream.match(/^\t@[a-zA-Z_][a-zA-Z0-9_-]*/, false)
+    ) {
+      stream.match(/^\t/); // Consume tab
+      stream.match(/^@/); // Consume @
+      stream.match(/^[a-zA-Z_][a-zA-Z0-9_-]*/); // Consume command
       tokenType = 'builtin';
     }
     // Special targets (.PHONY, .DEFAULT_GOAL, etc.) - MUST check before regular targets
@@ -50,7 +58,10 @@ export const makefileSimple: StreamParser<{
       tokenType = 'builtin';
     }
     // Make conditional keywords (ifeq, ifneq, ifdef, ifndef, else, endif)
-    else if (stream.sol() && stream.match(/^(ifeq|ifneq|ifdef|ifndef|else|endif)\b/, false)) {
+    else if (
+      stream.sol() &&
+      stream.match(/^(ifeq|ifneq|ifdef|ifndef|else|endif)\b/, false)
+    ) {
       stream.match(/^(ifeq|ifneq|ifdef|ifndef|else|endif)\b/);
       tokenType = 'builtin';
     }
@@ -65,9 +76,9 @@ export const makefileSimple: StreamParser<{
       }
     }
     // Target definitions (e.g., build: dependencies)
-    else if (stream.sol() && stream.match(/^[a-zA-Z0-9_\-\.]+:/, false)) {
+    else if (stream.sol() && stream.match(/^[a-zA-Z0-9_\-.]+:/, false)) {
       // Match target name only
-      const targetMatch = stream.match(/^[a-zA-Z0-9_\-\.]+/);
+      const targetMatch = stream.match(/^[a-zA-Z0-9_\-.]+/);
       if (targetMatch) {
         tokenType = 'keyword.control strong';
       } else {
@@ -75,7 +86,12 @@ export const makefileSimple: StreamParser<{
       }
     }
     // Target dependencies (everything after : on target line until EOL or #)
-    else if (!stream.sol() && lineText.match(/^[a-zA-Z0-9_\-\.]+:/) && ch !== '#' && !stream.eol()) {
+    else if (
+      !stream.sol() &&
+      lineText.match(/^[a-zA-Z0-9_\-.]+:/) &&
+      ch !== '#' &&
+      !stream.eol()
+    ) {
       // Check if we're past the colon on a target line
       const colonPos = lineText.indexOf(':');
       if (colonPos >= 0 && startPos > colonPos) {
@@ -162,7 +178,7 @@ export const makefileSimple: StreamParser<{
               stream.backUp(1);
               break;
             }
-            stream.next();  // Consume escaped character
+            stream.next(); // Consume escaped character
           }
         }
         tokenType = 'property';
@@ -178,7 +194,7 @@ export const makefileSimple: StreamParser<{
               stream.backUp(1);
               break;
             }
-            stream.next();  // Consume escaped character
+            stream.next(); // Consume escaped character
           }
         }
         tokenType = 'property';
@@ -200,7 +216,7 @@ export const makefileSimple: StreamParser<{
             stream.backUp(1);
             break;
           }
-          stream.next();  // Consume escaped character
+          stream.next(); // Consume escaped character
         }
       }
       tokenType = 'string';
@@ -218,7 +234,7 @@ export const makefileSimple: StreamParser<{
             stream.backUp(1);
             break;
           }
-          stream.next();  // Consume escaped character
+          stream.next(); // Consume escaped character
         }
       }
       tokenType = 'string';

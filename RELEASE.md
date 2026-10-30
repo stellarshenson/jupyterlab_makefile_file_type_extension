@@ -9,6 +9,7 @@ Production-ready JupyterLab Makefile Extension providing comprehensive syntax hi
 This release provides a complete Makefile editing experience in JupyterLab with intelligent syntax highlighting and custom file type recognition.
 
 **Custom Syntax Highlighting**:
+
 - Purpose-built CodeMirror 6 StreamParser with accurate token recognition for Makefile syntax
 - Target definitions (`build:`, `install:`, etc.) highlighted in bold with distinct keyword styling
 - Target dependencies after `:` highlighted as processingInstruction
@@ -23,12 +24,14 @@ This release provides a complete Makefile editing experience in JupyterLab with 
 - Tab-indented recipe lines distinguished from regular Makefile directives
 
 **File Type Support**:
+
 - Automatic recognition of `Makefile`, `makefile`, `GNUmakefile`, and `*.mk` files
 - VS Code-style bold red "M" icon (#d84a4a) for easy identification in JupyterLab file browser
 - Proper MIME type registration (`text/x-makefile`)
 - Pattern-based filename matching for standard Makefile naming conventions
 
 **Developer Experience**:
+
 - Improved code readability with semantic syntax highlighting
 - Visual aids for complex Makefile constructs like line continuations
 - Clear distinction between targets, variables, commands, and strings
@@ -57,12 +60,14 @@ npm install jupyterlab_makefile_file_type_extension
 ## Technical Details
 
 **Architecture**:
+
 - Frontend-only extension (no server-side handlers required)
 - Custom CodeMirror 6 StreamParser for Makefile syntax
 - JupyterLab document registry integration for file type registration
 - SVG-based icon with embedded color for consistent rendering
 
 **Dependencies**:
+
 - `@jupyterlab/application` ^4.0.0
 - `@jupyterlab/codemirror` ^4.0.0
 - `@jupyterlab/docregistry` ^4.0.0

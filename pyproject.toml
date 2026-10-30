@@ -43,8 +43,8 @@ artifacts = ["jupyterlab_makefile_file_type_extension/labextension"]
 exclude = [".github", "binder"]
 
 [tool.hatch.build.targets.wheel.shared-data]
-"jupyterlab_makefile_file_type_extension/labextension" = "share/jupyter/labextensions/jupyterlab_makefile_file_type_extension"
-"install.json" = "share/jupyter/labextensions/jupyterlab_makefile_file_type_extension/install.json"
+"jupyterlab_makefile_file_type_extension/labextension" = "share/jupyter/labextensions/@stellarshenson/jupyterlab-makefile-file-type-extension"
+"install.json" = "share/jupyter/labextensions/@stellarshenson/jupyterlab-makefile-file-type-extension/install.json"
 
 [tool.hatch.build.hooks.version]
 path = "jupyterlab_makefile_file_type_extension/_version.py"

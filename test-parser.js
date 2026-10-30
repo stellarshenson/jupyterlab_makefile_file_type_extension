@@ -64,10 +64,17 @@ function testStringParsing(testString) {
       stream.next(); // consume $
       stream.next(); // consume (
       state.parenDepth++;
-      console.log(`  Pos ${startPos}: Matched $(, incrementing depth to ${state.parenDepth}`);
+      console.log(
+        `  Pos ${startPos}: Matched $(, incrementing depth to ${state.parenDepth}`
+      );
 
       // Check for known Make functions
-      if (stream.match(/shell\b|wildcard\b|patsubst\b|filter\b|subst\b|foreach\b/, false)) {
+      if (
+        stream.match(
+          /shell\b|wildcard\b|patsubst\b|filter\b|subst\b|foreach\b/,
+          false
+        )
+      ) {
         const funcName = stream.match(/\w+/);
         console.log(`    -> Recognized Make function: ${funcName}`);
         tokenType = 'keyword';
@@ -79,14 +86,18 @@ function testStringParsing(testString) {
     else if (ch === '(' && state.parenDepth > 0) {
       state.parenDepth++;
       stream.next();
-      console.log(`  Pos ${startPos}: Found ( inside $(...), incrementing depth to ${state.parenDepth}`);
+      console.log(
+        `  Pos ${startPos}: Found ( inside $(...), incrementing depth to ${state.parenDepth}`
+      );
       tokenType = null;
     }
     // Track ) inside $(...)
     else if (ch === ')' && state.parenDepth > 0) {
       state.parenDepth--;
       stream.next();
-      console.log(`  Pos ${startPos}: Matched ), decrementing depth to ${state.parenDepth}`);
+      console.log(
+        `  Pos ${startPos}: Matched ), decrementing depth to ${state.parenDepth}`
+      );
       tokenType = state.parenDepth === 0 ? 'processingInstruction' : null;
     }
     // String parsing - double quotes
@@ -173,14 +184,18 @@ function testStringParsing(testString) {
     tokens.push({ text, type: tokenType, start: startPos, end: stream.pos });
 
     if (tokenType !== 'default') {
-      console.log(`  -> Token: [${startPos}-${stream.pos}] "${text}" -> ${tokenType}`);
+      console.log(
+        `  -> Token: [${startPos}-${stream.pos}] "${text}" -> ${tokenType}`
+      );
     }
   }
 
   console.log('\nFinal token breakdown:');
   tokens.forEach(t => {
     if (t.type !== 'default' && t.type !== null) {
-      console.log(`  [${t.start.toString().padStart(2)}-${t.end.toString().padStart(2)}] ${t.type.padEnd(20)} "${t.text}"`);
+      console.log(
+        `  [${t.start.toString().padStart(2)}-${t.end.toString().padStart(2)}] ${t.type.padEnd(20)} "${t.text}"`
+      );
     }
   });
 
@@ -200,7 +215,9 @@ testStringParsing('\'string with "double" inside\'');
 
 console.log('\n### Complex $(shell ...) constructs ###');
 testStringParsing('$(shell echo "hello")');
-testStringParsing('$(shell command -v node >/dev/null 2>&1 && node -p "require(\'./package.json\').version" || echo "0.0.0")');
+testStringParsing(
+  '$(shell command -v node >/dev/null 2>&1 && node -p "require(\'./package.json\').version" || echo "0.0.0")'
+);
 
 console.log('\n### Full lines from basic.mk ###');
 testStringParsing('TEST := "simple string"');
