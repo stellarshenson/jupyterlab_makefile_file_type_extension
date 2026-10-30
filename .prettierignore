@@ -4,3 +4,5 @@ node_modules
 **/package.json
 !/package.json
 jupyterlab_makefile_file_type_extension
+eslint.config.mjs
+.venv

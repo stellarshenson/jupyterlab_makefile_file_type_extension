@@ -32,7 +32,8 @@ Comprehensive Makefile editing support in JupyterLab with syntax highlighting th
 
 ## Requirements
 
-- JupyterLab >= 4.0.0
+- JupyterLab >= 4.6.0
+- Python >= 3.10
 
 ## Install
 

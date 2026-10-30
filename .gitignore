@@ -126,3 +126,9 @@ dmypy.json
 
 # Yarn cache
 .yarn/
+
+.nodeenv/
+
+logs/
+
+tmp/
