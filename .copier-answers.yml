@@ -12,6 +12,6 @@ labextension_name: '@stellarshenson/jupyterlab-makefile-file-type-extension'
 project_short_description: Jupyterlab extension to add handling of Makefiles and syntax
     colouring support
 python_name: jupyterlab_makefile_file_type_extension
-repository: ''
+repository: https://github.com/stellarshenson/jupyterlab_makefile_file_type_extension
 test: true
 
