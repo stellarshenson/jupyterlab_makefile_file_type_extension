@@ -2,6 +2,18 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## [1.0.110] - 2026-11-13
+
+### Changed
+
+- Prove the Makefile icon and the tab-only recipe colour
+- Keep prettier off the pm-tools trackers
+
+### Fixed
+
+- Colour uppercase targets, lowercase assignments, path and pattern targets, indented conditionals
+- Stop env.py opening as shell and an open $( colouring later lines
+
 ## [1.0.103] - 2026-10-31
 
 ### Changed
