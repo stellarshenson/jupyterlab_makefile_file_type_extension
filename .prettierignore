@@ -9,3 +9,6 @@ eslint.config.mjs
 .claude
 .agents
 package-lock.json
+# template-sync: keep - pm-tools owns the format of the trackers
+docs/acc-crit*.md
+docs/defects*.md
