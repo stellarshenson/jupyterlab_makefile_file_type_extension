@@ -22,7 +22,7 @@ Comprehensive Makefile editing support in JupyterLab with syntax highlighting th
 
 - Standard names: `Makefile`, `makefile`, `GNUmakefile`
 - Extensions: `*.mk`, `*.mak`, `*.make`
-- Custom red "M" icon in file browser
+- Custom red Makefile icon (a file with gears) in file browser
 
 **Highlighting coverage**:
 

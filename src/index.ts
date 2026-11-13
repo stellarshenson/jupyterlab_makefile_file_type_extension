@@ -55,13 +55,15 @@ const plugin: JupyterFrontEndPlugin<void> = {
     });
 
     // Register env files as shell script for syntax highlighting only (no icon)
-    // Matches: .env, .env.*, env.*, *.env
+    // Matches: .env, .env.*, *.env and env.<stage>; a bare env.* would take
+    // env.py and env.d.ts away from their own languages
     languages.addLanguage({
       name: 'dotenv',
       displayName: 'Environment File',
       mime: 'text/x-dotenv',
       extensions: [],
-      filename: /^(\.env|\.env\..*|env\..*|.*\.env)$/,
+      filename:
+        /^(\.env|\.env\..*|.*\.env|env\.(example|sample|template|local|dist|dev|development|prod|production|staging|test))$/,
       support: new LanguageSupport(StreamLanguage.define(shell))
     });
   }
