@@ -24,10 +24,13 @@ Which files get the Makefile type and icon
   - test-tags: UNIT
   - log: 2026-11-13T07:13:18Z @kj added
   - log: 2026-11-13T07:16:25Z @kj closed
-- [ ] `ACC-FILE-3-ICON` **Makefile icon** - MEDIUM; Makefile files show the red file-with-gears icon in the file browser
-  - test: open a folder holding a Makefile; the row shows the red icon
-  - test-tags: MANUAL
+- [x] `ACC-FILE-3-ICON` **Makefile icon** - MEDIUM; Makefile files show the red file-with-gears icon in the file browser
+  - evidence: Jest: registers the red gears icon for Makefile names; Jest 12 of 12 green in build_test.py at 1.0.109
+  - test: Jest: file name patterns, registers the red gears icon for Makefile names
+  - test-tags: UNIT
   - log: 2026-11-13T07:13:19Z @kj added
+  - log: 2026-11-13T09:17:49Z @kj closed
+  - log: 2026-11-13T09:17:49Z @kj edited test "open a folder holding a Makefile; the row shows the red icon" -> "Jest: file name patterns, registers the red gears icon for Makefile names"; test-tags "MANUAL" -> "UNIT"
 
 ## Highlighting `HIGH`
 
@@ -65,7 +68,10 @@ What the tokenizer colours
   - test-tags: UNIT
   - log: 2026-11-13T07:13:19Z @kj added
   - log: 2026-11-13T07:16:25Z @kj closed
-- [ ] `ACC-HIGH-9-TAB-RECIPE` **Only tab-indented recipes are coloured** - LOW; a space-indented @command recipe gets no recipe colour, as the README states
-  - test: type four spaces then @echo under a target; no builtin colour
-  - test-tags: MANUAL
+- [x] `ACC-HIGH-9-TAB-RECIPE` **Only tab-indented recipes are coloured** - LOW; a space-indented @command recipe gets no recipe colour, as the README states
+  - evidence: Jest: gives a space-indented @command no recipe colour; Jest 12 of 12 green in build_test.py at 1.0.109
+  - test: Jest: makefile tokenizer, gives a space-indented @command no recipe colour
+  - test-tags: UNIT
   - log: 2026-11-13T07:13:19Z @kj added
+  - log: 2026-11-13T09:17:49Z @kj closed
+  - log: 2026-11-13T09:17:49Z @kj edited test "type four spaces then @echo under a target; no builtin colour" -> "Jest: makefile tokenizer, gives a space-indented @command no recipe colour"; test-tags "MANUAL" -> "UNIT"

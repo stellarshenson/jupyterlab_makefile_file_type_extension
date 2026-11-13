@@ -2,7 +2,13 @@ import { StringStream } from '@codemirror/language';
 import { makefileSimple } from '../makefile-mode-simple';
 
 // The lab packages pull in ES modules Jest does not transform; the patterns need none of them
-jest.mock('@jupyterlab/ui-components', () => ({ LabIcon: class {} }));
+jest.mock('@jupyterlab/ui-components', () => ({
+  LabIcon: class {
+    constructor(options: object) {
+      Object.assign(this, options);
+    }
+  }
+}));
 jest.mock('@jupyterlab/codemirror', () => ({ IEditorLanguageRegistry: {} }));
 
 /** Token types of each line, as [text, type] pairs for the typed tokens. */
@@ -83,14 +89,21 @@ describe('makefile tokenizer', () => {
     const [cond] = tokenize(['  ifeq ($(OS),Linux)']);
     expect(cond[0]).toEqual(['  ifeq', 'builtin']);
   });
+
+  it('gives a space-indented @command no recipe colour', () => {
+    const [spaces, tab] = tokenize(['    @echo hi', '\t@echo hi']);
+    expect(spaces).toEqual([]);
+    expect(tab[0]).toEqual(['\t@echo', 'builtin']);
+  });
 });
 
 describe('file name patterns', () => {
   const added: Array<{ name: string; filename?: RegExp }> = [];
+  const addFileType = jest.fn();
   beforeAll(async () => {
     const plugin = (await import('../index')).default;
     plugin.activate(
-      { docRegistry: { addFileType: jest.fn() } } as any,
+      { docRegistry: { addFileType } } as any,
       { addLanguage: (spec: any) => added.push(spec) } as any
     );
   });
@@ -102,6 +115,15 @@ describe('file name patterns', () => {
       expect(claims('makefile', file)).toBe(true);
     }
     expect(claims('makefile', 'notes.txt')).toBe(false);
+  });
+
+  it('registers the red gears icon for Makefile names', () => {
+    const [fileType] = addFileType.mock.calls[0];
+    expect(fileType.icon.name).toBe('makefile:icon');
+    expect(fileType.icon.svgstr).toContain('fill="#c2544f"');
+    for (const file of ['Makefile', 'makefile', 'GNUmakefile', 'rules.mk']) {
+      expect(new RegExp(fileType.pattern).test(file)).toBe(true);
+    }
   });
 
   it('leaves env.py and env.d.ts to their own languages', () => {

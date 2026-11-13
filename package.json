@@ -1,6 +1,6 @@
 {
     "name": "@stellarshenson/jupyterlab-makefile-file-type-extension",
-    "version": "1.0.108",
+    "version": "1.0.109",
     "description": "Jupyterlab extension to add handling of Makefiles and syntax colouring support",
     "keywords": [
         "jupyter",
