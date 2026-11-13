@@ -67,3 +67,24 @@ The Makefile stream parser
   - log: 2026-11-13T07:12:58Z @kj added
   - log: 2026-11-13T07:13:18Z @kj edited test-tags added "UNIT"
   - log: 2026-11-13T07:16:24Z @kj closed
+- [x] `DEF-TOKEN-7-UPPER-TARGET` **Uppercase targets and lowercase assignments not coloured** - MINOR; the assignment branch claims every line starting with an uppercase letter or underscore and colours only uppercase names, so FORCE: and Dockerfile: get no target colour and objects = main.o gets no definition colour; `src/makefile-mode-simple.ts`
+  - evidence: assignment look-ahead now matches the name with its operator; Jest: colours uppercase targets and lowercase assignments; src/__tests__ Jest 10 of 10 green in build_test.py at 1.0.108
+  - repro: write FORCE: or Dockerfile: base, then objects = main.o; none is coloured
+  - test-tags: UNIT
+  - root-cause: 2026-11-13T07:36:45Z @kj the look-ahead matched the name alone, not the name with its assignment operator, and allowed uppercase only
+  - log: 2026-11-13T07:36:45Z @kj added
+  - log: 2026-11-13T07:38:51Z @kj closed
+- [x] `DEF-TOKEN-8-PATH-TARGET` **Pattern rules and path targets not coloured** - MINOR; the target character class excludes / and %, so %.o: %.c and src/main.o: src/main.c get no target or dependency colour; `src/makefile-mode-simple.ts`
+  - evidence: / and % added to the three target expressions; Jest: colours pattern rules and targets with a path; src/__tests__ Jest 10 of 10 green in build_test.py at 1.0.108
+  - repro: write %.o: %.c or src/main.o: src/main.c; neither side is coloured
+  - test-tags: UNIT
+  - root-cause: 2026-11-13T07:36:45Z @kj the three target expressions list letters, digits, underscore, hyphen and dot only
+  - log: 2026-11-13T07:36:45Z @kj added
+  - log: 2026-11-13T07:38:51Z @kj closed
+- [x] `DEF-TOKEN-9-INDENT-COND` **Indented conditionals not coloured** - MINOR; ifeq, else and endif indented with spaces, as nested conditionals are written, get no keyword colour; `src/makefile-mode-simple.ts`
+  - evidence: conditional expression allows leading spaces; Jest: colours a conditional indented with spaces; src/__tests__ Jest 10 of 10 green in build_test.py at 1.0.108
+  - repro: write two spaces then ifeq ($(OS),Linux); ifeq is not coloured
+  - test-tags: UNIT
+  - root-cause: 2026-11-13T07:36:46Z @kj the conditional expression is anchored at column 0 with no leading spaces allowed
+  - log: 2026-11-13T07:36:46Z @kj added
+  - log: 2026-11-13T07:38:52Z @kj closed

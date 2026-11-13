@@ -60,6 +60,29 @@ describe('makefile tokenizer', () => {
     const [line] = tokenize(['CC:=gcc']);
     expect(line).toEqual([['CC:=', 'variableName.definition strong']]);
   });
+
+  it('colours uppercase targets and lowercase assignments', () => {
+    const [force, docker, objects] = tokenize([
+      'FORCE:',
+      'Dockerfile: base',
+      'objects = main.o'
+    ]);
+    expect(force[0]).toEqual(['FORCE', 'keyword.control strong']);
+    expect(docker[0]).toEqual(['Dockerfile', 'keyword.control strong']);
+    expect(objects[0]).toEqual(['objects =', 'variableName.definition strong']);
+  });
+
+  it('colours pattern rules and targets with a path', () => {
+    const [pattern, path] = tokenize(['%.o: %.c', 'src/main.o: src/main.c']);
+    expect(pattern[0]).toEqual(['%.o', 'keyword.control strong']);
+    expect(path[0]).toEqual(['src/main.o', 'keyword.control strong']);
+    expect(path).toContainEqual(['s', 'processingInstruction']);
+  });
+
+  it('colours a conditional indented with spaces', () => {
+    const [cond] = tokenize(['  ifeq ($(OS),Linux)']);
+    expect(cond[0]).toEqual(['  ifeq', 'builtin']);
+  });
 });
 
 describe('file name patterns', () => {

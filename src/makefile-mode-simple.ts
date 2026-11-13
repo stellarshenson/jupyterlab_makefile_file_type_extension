@@ -48,25 +48,23 @@ export const makefileSimple: StreamParser<{
     // Make conditional keywords (ifeq, ifneq, ifdef, ifndef, else, endif)
     else if (
       stream.sol() &&
-      stream.match(/^(ifeq|ifneq|ifdef|ifndef|else|endif)\b/, false)
+      stream.match(/^ *(ifeq|ifneq|ifdef|ifndef|else|endif)\b/, false)
     ) {
-      stream.match(/^(ifeq|ifneq|ifdef|ifndef|else|endif)\b/);
+      stream.match(/^ *(ifeq|ifneq|ifdef|ifndef|else|endif)\b/);
       tokenType = 'builtin';
     }
     // Variable assignments (e.g., TEST := ...) - MUST check before targets
-    else if (stream.sol() && stream.match(/^[A-Z_][A-Z0-9_]*/, false)) {
-      const varName = stream.match(/^[A-Z_][A-Z0-9_]*/);
-      if (varName && stream.match(/\s*[:?+]?=/, false)) {
-        stream.match(/\s*[:?+]?=/);
-        tokenType = 'variableName.definition strong';
-      } else {
-        tokenType = null;
-      }
+    else if (
+      stream.sol() &&
+      stream.match(/^[A-Za-z_][A-Za-z0-9_]*\s*[:?+]?=/, false)
+    ) {
+      stream.match(/^[A-Za-z_][A-Za-z0-9_]*\s*[:?+]?=/);
+      tokenType = 'variableName.definition strong';
     }
     // Target definitions (e.g., build: dependencies)
-    else if (stream.sol() && stream.match(/^[a-zA-Z0-9_\-.]+:(?!=)/, false)) {
+    else if (stream.sol() && stream.match(/^[a-zA-Z0-9_\-./%]+:(?!=)/, false)) {
       // Match target name only
-      const targetMatch = stream.match(/^[a-zA-Z0-9_\-.]+/);
+      const targetMatch = stream.match(/^[a-zA-Z0-9_\-./%]+/);
       if (targetMatch) {
         tokenType = 'keyword.control strong';
       } else {
@@ -76,7 +74,7 @@ export const makefileSimple: StreamParser<{
     // Target dependencies (everything after : on target line until EOL or #)
     else if (
       !stream.sol() &&
-      lineText.match(/^[a-zA-Z0-9_\-.]+:(?!=)/) &&
+      lineText.match(/^[a-zA-Z0-9_\-./%]+:(?!=)/) &&
       ch !== '#' &&
       !stream.eol()
     ) {
